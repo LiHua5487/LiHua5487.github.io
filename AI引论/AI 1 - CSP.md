@@ -128,6 +128,7 @@ $$
 $$
 
 分配律
+
 $$
 \begin{align}
 (P \land (Q \lor R)) \iff ((P \land Q) \lor (P \land R)) \\
