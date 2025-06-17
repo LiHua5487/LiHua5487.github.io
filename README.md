@@ -3,4 +3,4 @@
 
 # 目录
 ## 大一下
-[note1]()
+[AI引论](https://lihua5487.github.io/AI引论/README.md)
