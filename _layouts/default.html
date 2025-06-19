@@ -143,6 +143,16 @@
       padding-right: 20px;
       max-width: 1000px;
     }
+
+    /* 图片样式 */
+    .markdown-image {
+      display: block;
+      height: auto;
+      margin: 15px auto;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
     
     /* 返回按钮 */
     .back-button-container {
@@ -383,6 +393,32 @@
           });
         });
         pre.appendChild(button);
+
+        // 图片链接处理
+        function processImages() {
+          const contentArea = document.querySelector('.content-with-sidebar');
+          const imageRegex = /!\[\[([^\]]+)\]\](\s*<(\d+)>)?/g;
+          
+          contentArea.innerHTML = contentArea.innerHTML.replace(imageRegex, (match, path, sizePart, scalePercent) => {
+            // 添加基础URL前缀
+            let imageUrl = 'https://lihua5487.github.io/' + path.trim();
+            
+            // 创建图片元素
+            let imgElement = `<img src="${imageUrl}" class="markdown-image"`;
+            
+            // 处理缩放参数
+            if (scalePercent) {
+              imgElement += ` style="width: ${scalePercent}%;"`;
+            } else {
+              // 对于没有缩放参数的图片，确保宽度不超过内容区域
+              imgElement += ` style="max-width: 100%;"`;
+            }
+            
+            imgElement += '>';
+            return imgElement;
+          });
+        }
+        processImages();
       });
 
       // 生成大纲导航
