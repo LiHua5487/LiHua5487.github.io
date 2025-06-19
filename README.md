@@ -20,5 +20,9 @@
 # 笔记目录
 ---
 ## 大一下
-- [AI引论](https://lihua5487.github.io/AI引论/index)<br>
-- [程设](https://lihua5487.github.io/程设/index)
+- [人工智能引论](https://lihua5487.github.io/AI引论/index)<br>
+- [程序设计实习](https://lihua5487.github.io/程设/index)
+
+
+
+
