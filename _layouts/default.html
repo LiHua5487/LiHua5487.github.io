@@ -547,10 +547,10 @@
     // 第一步：处理 Obsidian 图片语法
     let contentHtml = contentContainer.innerHTML;
     
-    // 改进的正则表达式：匹配 ![[path.png]]<scale> 格式
+    // 改进的正则表达式：确保正确匹配整个 <scale> 部分
     contentHtml = contentHtml.replace(
-      /!\[\[([^\]]+?\.(?:png|jpg|jpeg|gif|bmp|svg|webp))\s*\]\](\s*<(\d+)>)?/gi,
-      (match, path, scalePart, scaleValue) => {
+      /!\[\[([^\]]+?\.(?:png|jpg|jpeg|gif|bmp|svg|webp))\s*\]\]\s*<(\d+)>/gi,
+      (match, path, scaleValue) => {
         // 清理路径中的空格和特殊字符
         const cleanedPath = path.trim()
           .replace(/\s+/g, '%20')  // 替换空格为 URL 编码
@@ -565,7 +565,28 @@
         // 创建图片标签（添加 data-scale 属性存储缩放比例）
         return `<img src="${fullImageUrl}" 
                  alt="${altText}" 
-                 ${scaleValue ? `data-scale="${scaleValue}"` : ''}
+                 data-scale="${scaleValue}"
+                 class="obsidian-image">`;
+      }
+    );
+    
+    // 处理没有缩放比例的图片
+    contentHtml = contentHtml.replace(
+      /!\[\[([^\]]+?\.(?:png|jpg|jpeg|gif|bmp|svg|webp))\s*\]\]/gi,
+      (match, path) => {
+        // 清理路径
+        const cleanedPath = path.trim()
+          .replace(/\s+/g, '%20')
+          .replace(/^[\\/.\s]+/, '');
+        
+        // 构建完整 URL
+        const fullImageUrl = `${BASE_URL}${cleanedPath}`;
+        
+        // 获取文件名作为 alt 文本
+        const altText = cleanedPath.split('/').pop();
+        
+        return `<img src="${fullImageUrl}" 
+                 alt="${altText}" 
                  class="obsidian-image">`;
       }
     );
@@ -585,12 +606,8 @@
           const naturalWidth = this.naturalWidth;
           const naturalHeight = this.naturalHeight;
           
-          // 应用缩放比例
+          // 应用缩放比例（仅设置宽度，高度自动调整）
           this.style.width = `${naturalWidth * scaleFactor}px`;
-          this.style.height = `${naturalHeight * scaleFactor}px`;
-          
-          // 添加自适应样式
-          this.style.maxWidth = '100%';
           this.style.height = 'auto';
         };
         
