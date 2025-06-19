@@ -63,22 +63,14 @@
       background-color: #f9f9f9;
     }
     
-    /* 代码块容器 */
-    pre {
-      border-radius: 6px;
-      padding: 0;
-      margin: 1.5em 0;
-      overflow: auto;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.04);
-    }
-    
-    /* 内联代码 */
+    /* 内联代码样式 */
     code:not([class]) {
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-size: 14px;
       background-color: rgba(27,31,35,0.05);
       padding: 0.2em 0.4em;
       border-radius: 3px;
+      color: #d63384; /* 内联代码文字颜色 */
     }
     
     /* 引用块 */
@@ -106,9 +98,70 @@
     }
   </style>
   
-  <!-- highlight.js 主题 -->
+  <!-- highlight.js 主题：深色主题但保留内联代码背景 -->
   <link rel="stylesheet" 
-      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark-dimmed.min.css">
+  
+  <!-- 覆盖 highlight.js 字体 -->
+  <style>
+    /* 统一代码字体 */
+    code, pre code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace !important;
+      font-size: 14px !important;
+    }
+    
+    /* 恢复内联代码背景 */
+    :not(pre) > code {
+      background-color: rgba(27,31,35,0.05) !important;
+      color: #d63384 !important;
+    }
+    
+    /* 代码块样式 */
+    pre {
+      border-radius: 6px;
+      padding: 16px !important; /* 保持原始内边距 */
+      margin: 1.5em 0;
+      overflow: auto;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+      border-left: 4px solid #4285f4; /* 左侧高亮条 */
+      position: relative; /* 为复制按钮定位 */
+    }
+    
+    /* 优化复制按钮位置 */
+    .copy-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 4px 8px;
+      background: #555;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+      font-size: 12px;
+      z-index: 10;
+    }
+    
+    pre:hover .copy-button {
+      opacity: 1;
+    }
+    
+    /* 确保代码块不覆盖高亮条 */
+    pre code {
+      display: block;
+      padding: 0 !important;
+      overflow-x: auto;
+      background: none !important;
+    }
+    
+    /* 高亮语言提示 */
+    .hljs {
+      padding: 0;
+      background: transparent !important;
+    }
+  </style>
 </head>
 <body>
   <!-- 页面内容 -->
@@ -134,8 +187,11 @@
         hljs.highlightElement(el);
       });
       
-      // 添加复制按钮
+      // 添加复制按钮（位置优化）
       document.querySelectorAll('pre').forEach((pre) => {
+        // 如果已有复制按钮则跳过
+        if (pre.querySelector('.copy-button')) return;
+        
         const button = document.createElement('button');
         button.className = 'copy-button';
         button.innerHTML = '复制';
@@ -150,33 +206,6 @@
       });
     });
   </script>
-  
-  <!-- 复制按钮样式 -->
-  <style>
-    .copy-button {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      padding: 4px 8px;
-      background: #555;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      opacity: 0.7;
-      transition: opacity 0.3s;
-      font-size: 12px;
-    }
-    
-    pre:hover .copy-button {
-      opacity: 1;
-    }
-    
-    pre {
-      position: relative;
-      padding-top: 30px !important;
-    }
-  </style>
   
   <!-- MathJax 配置 -->
   <script>
