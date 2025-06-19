@@ -9,6 +9,6 @@ python部分的笔记同样不包含python特别基础的东西，如常见变�
 # 目录
 - [cpp面向对象编程](https://lihua5487.github.io/程设/面向对象编程)
 - [STL](https://lihua5487.github.io/程设/STL)
-- [c++11与进阶内容](https://lihua5487.github.io/程设/c++11与进阶内容)
+- [C++11与进阶内容](https://lihua5487.github.io/程设/C++11与进阶内容)
 - [Python基础](https://lihua5487.github.io/程设/Python基础)
 - [Python应用](https://lihua5487.github.io/程设/Python应用)
