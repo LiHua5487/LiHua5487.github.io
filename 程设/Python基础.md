@@ -72,11 +72,11 @@ str = s.decode("utf8)
 要实现 cpp 中的 `while(cin>>n)` 这种的效果，可以这么写
 ```python
 while True:
-	try:
-		n = int(input())
-		print(n)
-	except EOFError:
-		pass
+    try:
+        n = int(input())
+        print(n)
+    except EOFError:
+        pass
 ```
 
 ---
