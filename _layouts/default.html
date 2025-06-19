@@ -153,15 +153,25 @@
         margin: 10px auto;
       }
     }
+
+    /* 图片错误样式 */
+    img.image-error {
+      border: 2px dashed #ff6b6b !important;
+      background-color: #fff8f8 !important;
+      padding: 15px !important;
+      text-align: center !important;
+      font-style: italic !important;
+      color: #ff6b6b !important;
+    }
     
-    /* 加载失败的图片 */
-    img[src$="#error"] {
-      border: 2px dashed #ff6b6b;
-      background-color: #fff8f8;
-      padding: 15px;
-      text-align: center;
-      font-style: italic;
-      color: #ff6b6b;
+    /* 确保图片保持响应式 */
+    img.obsidian-image {
+      max-width: 100% !important;
+      height: auto !important;
+      display: block !important;
+      margin: 15px auto !important;
+      box-sizing: border-box !important;
+      transition: all 0.3s ease;
     }
     
     /* 隐藏可能残留的尺寸文本 */
@@ -537,10 +547,10 @@
     // 第一步：处理 Obsidian 图片语法
     let contentHtml = contentContainer.innerHTML;
     
-    // 更精确的正则表达式匹配
+    // 增强的正则表达式：支持带尺寸的图片语法
     contentHtml = contentHtml.replace(
-      /!\[\[([^\]\n]+?)(?:\|(\d+)x(\d+))?\]\]/g,
-      (match, path, width, height) => {
+      /!\[\[([^\]\n\|]+?\.(?:png|jpg|jpeg|gif|bmp|svg|webp))\s*(\|(\d+)x(\d+))?\]\]/gi,
+      (match, path, sizePart, width, height) => {
         // 清理路径
         const cleanedPath = path.trim()
           .replace(/\s+/g, '%20')  // 替换空格为 URL 编码
@@ -549,60 +559,65 @@
         // 构建完整 URL
         const fullImageUrl = `${BASE_URL}${cleanedPath}`;
         
-        // 计算缩放比例 (最大宽度为容器宽度的 80%)
-        const maxWidth = Math.min(window.innerWidth * 0.8, parseInt(width) || 800);
-        const scaleFactor = width ? maxWidth / parseInt(width) : 1;
+        // 获取文件名作为 alt 文本
+        const altText = cleanedPath.split('/').pop();
         
-        // 计算缩放后的尺寸
-        const scaledWidth = Math.round(width ? parseInt(width) * scaleFactor : maxWidth);
-        const scaledHeight = height ? Math.round(parseInt(height) * scaleFactor) : 'auto';
-        
-        // 构建图片标签
+        // 创建图片标签（添加 data-orig-size 属性存储原始尺寸信息）
         return `<img src="${fullImageUrl}" 
-                 alt="${path.split('/').pop()}" 
-                 style="max-width: ${maxWidth}px; 
-                        width: ${scaledWidth}px; 
-                        height: ${scaledHeight}px; 
-                        display: block; 
-                        margin: 10px auto; 
-                        border: 1px solid #eee;
-                        box-sizing: border-box;">`;
+                 alt="${altText}" 
+                 ${width && height ? `data-orig-size="${width}x${height}"` : ''}
+                 class="obsidian-image">`;
       }
     );
     
     // 应用处理后的内容
     contentContainer.innerHTML = contentHtml;
     
-    // 第二步：添加图片加载错误处理
-    document.querySelectorAll('img').forEach(img => {
+    // 第二步：添加图片加载处理（包括尺寸调整）
+    document.querySelectorAll('img.obsidian-image').forEach(img => {
+      // 图片加载成功后处理尺寸
+      img.addEventListener('load', function() {
+        // 检查是否有自定义尺寸
+        if (this.dataset.origSize) {
+          const [origWidth, origHeight] = this.dataset.origSize.split('x').map(Number);
+          
+          // 计算缩放比例（基于原图尺寸）
+          const scaleFactor = Math.min(
+            1, // 最大缩放比例为100%
+            window.innerWidth * 0.8 / origWidth // 确保图片不超过容器宽度的80%
+          );
+          
+          // 应用缩放后的尺寸
+          this.style.width = `${origWidth * scaleFactor}px`;
+          this.style.height = `${origHeight * scaleFactor}px`;
+          
+          // 添加尺寸标记（可选）
+          this.title = `原始尺寸: ${origWidth}×${origHeight} | 显示尺寸: ${Math.round(origWidth * scaleFactor)}×${Math.round(origHeight * scaleFactor)}`;
+        }
+      });
+      
+      // 图片加载失败处理
       img.addEventListener('error', function() {
         console.error('图片加载失败:', this.src);
         this.alt = `[图片加载失败: ${this.src.replace(BASE_URL, '')}]`;
-        this.style.border = '2px dashed red';
-        this.style.backgroundColor = '#fff8f8';
-        this.style.padding = '10px';
-        this.style.textAlign = 'center';
+        this.classList.add('image-error');
       });
     });
     
-    // 第三步：添加响应式缩放
+    // 第三步：窗口大小变化时重新计算图片尺寸
     window.addEventListener('resize', function() {
-      document.querySelectorAll('img').forEach(img => {
-        const originalWidth = img.dataset.origWidth || img.naturalWidth;
-        const originalHeight = img.dataset.origHeight || img.naturalHeight;
+      document.querySelectorAll('img.obsidian-image[data-orig-size]').forEach(img => {
+        const [origWidth, origHeight] = img.dataset.origSize.split('x').map(Number);
         
-        if (originalWidth && originalHeight) {
-          const maxWidth = Math.min(window.innerWidth * 0.8, originalWidth);
-          const scaleFactor = maxWidth / originalWidth;
-          
-          img.style.maxWidth = `${maxWidth}px`;
-          img.style.width = `${Math.round(originalWidth * scaleFactor)}px`;
-          img.style.height = `${Math.round(originalHeight * scaleFactor)}px`;
-          
-          // 保存原始尺寸供下次调整使用
-          img.dataset.origWidth = originalWidth;
-          img.dataset.origHeight = originalHeight;
-        }
+        // 重新计算缩放比例
+        const scaleFactor = Math.min(
+          1,
+          window.innerWidth * 0.8 / origWidth
+        );
+        
+        // 应用新尺寸
+        img.style.width = `${origWidth * scaleFactor}px`;
+        img.style.height = `${origHeight * scaleFactor}px`;
       });
     });
   });
