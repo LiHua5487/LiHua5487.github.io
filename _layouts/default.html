@@ -368,7 +368,7 @@
     
     <!-- 大纲导航 -->
     <nav id="outline-sidebar" class="outline-sidebar">
-      <h3>导航菜单</h3>
+      <h3>导航大纲</h3>
       <ul id="outline-list"></ul>
     </nav>
   </div>
@@ -547,11 +547,11 @@
     // 第一步：处理 Obsidian 图片语法
     let contentHtml = contentContainer.innerHTML;
     
-    // 增强的正则表达式：支持带尺寸的图片语法
+    // 改进的正则表达式：正确分离路径和尺寸信息
     contentHtml = contentHtml.replace(
-      /!\[\[([^\]\n\|]+?\.(?:png|jpg|jpeg|gif|bmp|svg|webp))\s*(\|(\d+)x(\d+))?\]\]/gi,
+      /!\[\[([^\|\]]+?\.(?:png|jpg|jpeg|gif|bmp|svg|webp))\s*(\|([\d]+)x([\d]+))?\]\]/gi,
       (match, path, sizePart, width, height) => {
-        // 清理路径
+        // 清理路径中的空格和特殊字符
         const cleanedPath = path.trim()
           .replace(/\s+/g, '%20')  // 替换空格为 URL 编码
           .replace(/^[\\/.\s]+/, '');  // 移除开头的特殊字符
@@ -562,10 +562,10 @@
         // 获取文件名作为 alt 文本
         const altText = cleanedPath.split('/').pop();
         
-        // 创建图片标签（添加 data-orig-size 属性存储原始尺寸信息）
+        // 创建图片标签（添加 data-size 属性存储尺寸信息）
         return `<img src="${fullImageUrl}" 
                  alt="${altText}" 
-                 ${width && height ? `data-orig-size="${width}x${height}"` : ''}
+                 ${width && height ? `data-size="${width}x${height}"` : ''}
                  class="obsidian-image">`;
       }
     );
@@ -573,28 +573,39 @@
     // 应用处理后的内容
     contentContainer.innerHTML = contentHtml;
     
-    // 第二步：添加图片加载处理（包括尺寸调整）
+    // 第二步：处理图片加载和尺寸调整
     document.querySelectorAll('img.obsidian-image').forEach(img => {
-      // 图片加载成功后处理尺寸
-      img.addEventListener('load', function() {
-        // 检查是否有自定义尺寸
-        if (this.dataset.origSize) {
-          const [origWidth, origHeight] = this.dataset.origSize.split('x').map(Number);
+      // 处理尺寸信息
+      if (img.dataset.size) {
+        const [specifiedWidth, specifiedHeight] = img.dataset.size.split('x').map(Number);
+        
+        // 设置尺寸信息作为属性
+        img.dataset.specifiedWidth = specifiedWidth;
+        img.dataset.specifiedHeight = specifiedHeight;
+        
+        // 添加加载完成后的处理
+        img.onload = function() {
+          // 获取图片原始尺寸
+          const naturalWidth = this.naturalWidth;
+          const naturalHeight = this.naturalHeight;
           
-          // 计算缩放比例（基于原图尺寸）
-          const scaleFactor = Math.min(
-            1, // 最大缩放比例为100%
-            window.innerWidth * 0.8 / origWidth // 确保图片不超过容器宽度的80%
-          );
+          // 计算缩放比例
+          const scaleFactor = naturalWidth > 0 ? specifiedWidth / naturalWidth : 1;
           
-          // 应用缩放后的尺寸
-          this.style.width = `${origWidth * scaleFactor}px`;
-          this.style.height = `${origHeight * scaleFactor}px`;
+          // 应用缩放比例
+          this.style.width = `${specifiedWidth}px`;
+          this.style.height = `${Math.round(naturalHeight * scaleFactor)}px`;
           
-          // 添加尺寸标记（可选）
-          this.title = `原始尺寸: ${origWidth}×${origHeight} | 显示尺寸: ${Math.round(origWidth * scaleFactor)}×${Math.round(origHeight * scaleFactor)}`;
-        }
-      });
+          // 添加自适应样式
+          this.style.maxWidth = '100%';
+          this.style.height = 'auto';
+          this.style.display = 'block';
+          this.style.margin = '15px auto';
+        };
+        
+        // 如果图片已经加载完成，立即处理
+        if (img.complete) img.onload();
+      }
       
       // 图片加载失败处理
       img.addEventListener('error', function() {
@@ -604,20 +615,21 @@
       });
     });
     
-    // 第三步：窗口大小变化时重新计算图片尺寸
+    // 第三步：窗口大小变化时重新调整图片
     window.addEventListener('resize', function() {
-      document.querySelectorAll('img.obsidian-image[data-orig-size]').forEach(img => {
-        const [origWidth, origHeight] = img.dataset.origSize.split('x').map(Number);
-        
-        // 重新计算缩放比例
-        const scaleFactor = Math.min(
-          1,
-          window.innerWidth * 0.8 / origWidth
-        );
-        
-        // 应用新尺寸
-        img.style.width = `${origWidth * scaleFactor}px`;
-        img.style.height = `${origHeight * scaleFactor}px`;
+      document.querySelectorAll('img.obsidian-image[data-size]').forEach(img => {
+        if (img.dataset.specifiedWidth && img.naturalWidth > 0) {
+          const specifiedWidth = parseInt(img.dataset.specifiedWidth);
+          const naturalWidth = img.naturalWidth;
+          const naturalHeight = img.naturalHeight;
+          
+          // 重新计算缩放比例
+          const scaleFactor = naturalWidth > 0 ? specifiedWidth / naturalWidth : 1;
+          
+          // 应用新尺寸
+          img.style.width = `${specifiedWidth}px`;
+          img.style.height = `${Math.round(naturalHeight * scaleFactor)}px`;
+        }
       });
     });
   });
