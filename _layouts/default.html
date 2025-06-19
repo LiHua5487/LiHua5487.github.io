@@ -210,71 +210,6 @@
       background-color: #e1e4e8;
       text-decoration: none;
     }
-
-    /* 侧边栏头部样式 */
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      padding: 12px 10px 8px;
-      border-bottom: 1px solid #eaecef;
-      margin-bottom: 10px;
-    }
-    .sidebar-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #24292e;
-      margin-left: 8px;
-    }
-    /* 侧边栏切换按钮 - 左上角位置 */
-    .sidebar-toggle {
-      width: 28px;
-      height: 28px;
-      background: #f6f8fa;
-      border: 1px solid #e1e4e8;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      transition: all 0.2s;
-    }
-    .sidebar-toggle:hover {
-      background: #e1e4e8;
-    }
-    .sidebar-toggle .toggle-icon {
-      width: 12px;
-      height: 12px;
-      transition: transform 0.3s;
-    }
-    /* 侧边栏隐藏状态 */
-    .sidebar-container.hidden {
-      width: 0;
-      overflow: hidden;
-    }
-    .sidebar-container.hidden .sidebar-content {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    /* 隐藏状态下显示在左侧的">"按钮 */
-    .sidebar-container.hidden .sidebar-toggle {
-      position: fixed;
-      left: 0;
-      top: 20px;
-      z-index: 1000;
-      width: 24px;
-      height: 24px;
-      border-radius: 0 4px 4px 0;
-      transform: rotate(180deg); /* 翻转按钮方向 */
-    }
-    /* 内容区域动画 */
-    .content-with-sidebar {
-      transition: margin-left 0.3s ease;
-    }
-    /* 当侧边栏隐藏时的内容区域 */
-    .sidebar-container.hidden ~ .content-with-sidebar {
-      margin-left: 30px; /* 只保留很小的左侧间距 */
-    }
     
     /* 大纲导航 */
     .outline-sidebar {
@@ -420,18 +355,6 @@
         返回
       </a>
     </div>
-
-    <div class="sidebar-header">
-      <!-- 切换按钮 -->
-      <button id="sidebar-toggle" class="sidebar-toggle">
-        <svg class="toggle-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
-        </svg>
-      </button>
-      
-      <!-- 标题区域 -->
-      <div class="sidebar-title">文本大纲</div>
-    </div>
     
     <!-- 大纲导航 -->
     <nav id="outline-sidebar" class="outline-sidebar">
@@ -502,25 +425,6 @@
           });
         });
         pre.appendChild(button);
-
-        // 侧边栏切换功能
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebarContainer = document.querySelector('.sidebar-container');
-        const contentArea = document.querySelector('.content-with-sidebar');
-        
-        // 修复点击功能
-        sidebarToggle.addEventListener('click', () => {
-          // 切换隐藏类
-          sidebarContainer.classList.toggle('hidden');
-          
-          // 更新按钮图标方向
-          const toggleIcon = sidebarToggle.querySelector('.toggle-icon');
-          if (sidebarContainer.classList.contains('hidden')) {
-            toggleIcon.style.transform = 'rotate(180deg)';
-          } else {
-            toggleIcon.style.transform = 'rotate(0deg)';
-          }
-        });
       });
 
       // 生成大纲导航
