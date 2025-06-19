@@ -326,7 +326,7 @@
     
     <!-- 大纲导航 -->
     <nav id="outline-sidebar" class="outline-sidebar">
-      <h3>页面大纲</h3>
+      <h3>导航大纲</h3>
       <ul id="outline-list"></ul>
     </nav>
   </div>
@@ -397,9 +397,9 @@
         // 图片链接处理
         function processImages() {
           const contentArea = document.querySelector('.content-with-sidebar');
-          const imageRegex = /!\[\[([^\]]+)\]\](\s*<(\d+)>)?/g;
+          const imageRegex = /!\[\[([^\]]+?)(?:\|[\dx]+)?\]\]\s*(?:<(\d+)>)?/g;
           
-          contentArea.innerHTML = contentArea.innerHTML.replace(imageRegex, (match, path, sizePart, scalePercent) => {
+          contentArea.innerHTML = contentArea.innerHTML.replace(imageRegex, (match, path, scalePercent) => {
             // 添加基础URL前缀
             let imageUrl = 'https://lihua5487.github.io/' + path.trim();
             
@@ -408,9 +408,8 @@
             
             // 处理缩放参数
             if (scalePercent) {
-              imgElement += ` style="width: ${scalePercent}%;"`;
+              imgElement += ` style="width: ${scalePercent}%; max-width: ${scalePercent}%;"`;
             } else {
-              // 对于没有缩放参数的图片，确保宽度不超过内容区域
               imgElement += ` style="max-width: 100%;"`;
             }
             
