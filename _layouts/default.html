@@ -482,49 +482,53 @@
   <!-- 修正图片链接格式 -->
   <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // 基础 URL
+    // 基础 URL 和课程目录映射
     const BASE_URL = 'https://lihua5487.github.io/';
+    const COURSE_MAP = {
+      'aiimg': 'AI引论/AIimg',
+      '程设': '程设',
+      // 添加其他课程映射
+    };
     
+    // 获取当前课程名称（从URL路径推断）
+    const getCurrentCourse = () => {
+      const pathSegments = window.location.pathname.split('/').filter(Boolean);
+      return pathSegments.length > 1 ? pathSegments[1] : '';
+    };
     // 处理 Obsidian 图片语法
     const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
-    
-    // 第一步：处理 Obsidian 图片语法
     let contentHtml = contentContainer.innerHTML;
     
-    // 更精确的正则表达式匹配
     contentHtml = contentHtml.replace(
       /!\[\[([^\]\n]+?)(?:\|(\d+)x(\d+))?\]\]/g,
       (match, path, width, height) => {
         // 清理路径
-        const cleanedPath = path.trim()
-          .replace(/\s+/g, '%20')  // 替换空格为 URL 编码
-          .replace(/^[\\/.\s]+/, '');  // 移除开头的特殊字符
+        let cleanedPath = path.trim()
+          .replace(/\s+/g, '%20')
+          .replace(/^[\\/.\s]+/, '');
+        
+        // 自动添加课程目录（如果适用）
+        const currentCourse = getCurrentCourse();
+        if (!cleanedPath.includes('/') && currentCourse && COURSE_MAP[currentCourse]) {
+          cleanedPath = `${COURSE_MAP[currentCourse]}/${cleanedPath}`;
+        }
         
         // 构建完整 URL
         const fullImageUrl = `${BASE_URL}${cleanedPath}`;
         
-        // 计算缩放比例 (最大宽度为容器宽度的 80%)
-        const maxWidth = Math.min(window.innerWidth * 0.8, parseInt(width) || 800);
-        const scaleFactor = width ? maxWidth / parseInt(width) : 1;
-        
-        // 计算缩放后的尺寸
-        const scaledWidth = Math.round(width ? parseInt(width) * scaleFactor : maxWidth);
-        const scaledHeight = height ? Math.round(parseInt(height) * scaleFactor) : 'auto';
-        
-        // 构建图片标签
+        // 响应式图片标签
         return `<img src="${fullImageUrl}" 
                  alt="${path.split('/').pop()}" 
-                 style="max-width: ${maxWidth}px; 
-                        width: ${scaledWidth}px; 
-                        height: ${scaledHeight}px; 
+                 style="max-width: 80%; 
+                        height: auto; 
                         display: block; 
-                        margin: 10px auto; 
+                        margin: 15px auto;
                         border: 1px solid #eee;
-                        box-sizing: border-box;">`;
+                        border-radius: 4px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);">`;
       }
     );
     
-    // 应用处理后的内容
     contentContainer.innerHTML = contentHtml;
     
     // 第二步：添加图片加载错误处理
