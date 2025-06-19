@@ -3,25 +3,33 @@
 <head>
   <meta charset="utf-8">
   <title>{{ page.title }}</title>
-  <!-- 其他head内容 -->
+  
+  <style>
+    body {
+      color: #333;
+      background-color: #fff;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+    }
+  </style>
 </head>
 <body>
-  <!-- 页面内容 -->
   {{ content }}
-
+  
   <script>
     MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
         displayMath: [['$$','$$'], ['\\[','\\]']],
-        processEscapes: true,
-        tags: 'ams'
-      },
-      options: {
-        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+        processEscapes: true
       }
     };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+  <script 
+    id="MathJax-script" 
+    async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
 </body>
 </html>
