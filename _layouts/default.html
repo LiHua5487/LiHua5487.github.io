@@ -427,7 +427,7 @@
     <nav id="outline-sidebar" class="outline-sidebar">
       <!-- 添加标题栏和隐藏按钮 -->
       <div class="outline-header">
-        <div class="outline-title">页面大纲</div>
+        <div class="outline-title">页面导航</div>
         <button class="outline-toggle" id="outline-toggle">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
             <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
@@ -561,27 +561,25 @@
       }
       
       outlineToggle.addEventListener('click', () => {
-        outlineContainer.classList.add('hidden');
-        expandOutline.style.display = 'flex';
-        isOutlineHidden = true;
-        // 保存状态
-        localStorage.setItem('outlineState', 'hidden');
+        document.querySelector('.content-with-sidebar').classList.add('transitioning');
+        setTimeout(() => {
+          outlineContainer.classList.add('hidden');
+          expandOutline.style.display = 'flex';
+          isOutlineHidden = true;
+          localStorage.setItem('outlineState', 'hidden');
+          document.querySelector('.content-with-sidebar').classList.remove('transitioning');
+        }, 10);
       });
       
       expandOutline.addEventListener('click', () => {
-        outlineContainer.classList.remove('hidden');
-        expandOutline.style.display = 'none';
-        isOutlineHidden = false;
-        // 保存状态
-        localStorage.setItem('outlineState', 'visible');
-      });
-      
-      // 响应窗口大小变化
-      window.addEventListener('resize', () => {
-        if (window.innerWidth <= 1200) {
-          outlineContainer.style.display = 'none';
+        document.querySelector('.content-with-sidebar').classList.add('transitioning');
+        setTimeout(() => {
+          outlineContainer.classList.remove('hidden');
           expandOutline.style.display = 'none';
-        } 
+          isOutlineHidden = false;
+          localStorage.setItem('outlineState', 'visible');
+          document.querySelector('.content-with-sidebar').classList.remove('transitioning');
+        }, 10);
       });
     });
   </script>
