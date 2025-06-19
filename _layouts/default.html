@@ -39,6 +39,36 @@
     li {
       margin: 0.5em 0;
     }
+
+    /* $$...$$ 公式 */
+    .MathJax_Display {
+      text-align: center;
+      display: block;
+      margin: 1.5em 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 10px 0;
+    }
+    
+    /* 公式容器 */
+    .math-container {
+      display: inline-block;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    
+    /* 移动设备公式调整 */
+    @media (max-width: 768px) {
+      .MathJax_Display {
+        margin: 1em 0;
+        padding: 8px 0;
+      }
+      
+      .math-container {
+        max-width: 95%;
+        overflow-x: auto;
+      }
+    }
     
     /* 表格样式 */
     table {
@@ -468,6 +498,18 @@
       },
       options: {
         enableMenu: false // 禁用右键菜单
+      },
+      startup: {
+        ready: () => {
+          MathJax.startup.defaultReady();
+          // 为每个display公式添加容器
+          document.querySelectorAll('.MathJax_Display').forEach(math => {
+            const container = document.createElement('div');
+            container.className = 'math-container';
+            math.parentNode.insertBefore(container, math);
+            container.appendChild(math);
+          });
+        }
       }
     };
   </script>
