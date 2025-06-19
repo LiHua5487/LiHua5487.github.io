@@ -342,6 +342,11 @@
     .sidebar-container.hidden .outline-sidebar {
       opacity: 0;
     }
+
+    /* 过渡效果 */
+    .sidebar-container {
+      transition: width 0.3s ease, transform 0.3s ease;
+    }
   </style>
   
   <!-- highlight.js 主题：深色主题但保留内联代码背景 -->
@@ -580,12 +585,7 @@
         if (window.innerWidth <= 1200) {
           outlineContainer.style.display = 'none';
           expandOutline.style.display = 'none';
-        } else {
-          outlineContainer.style.display = 'block';
-          if (isOutlineHidden) {
-            expandOutline.style.display = 'flex';
-          }
-        }
+        } 
       });
     });
   </script>
