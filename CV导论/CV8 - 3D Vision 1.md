@@ -7,13 +7,13 @@ From 2D to 3D
 
 将 2D 图片是一个 Regular grid ，即二维网格
 
-人眼（双目图）对于 3D 空间的感知基于视差 disparity，是 implicit 隐式的
-比如说只能粗略感知远近，但不知道具体距离
+人眼（双目图）对于 3D 空间的感知基于视差 disparity，是 implicit 隐式的<br>
+比如说只能粗略感知远近，但不知道具体距离<br>
 多视角图片、全景图对于 3D 空间的反映也是隐式的
 
 而用3D 建模等就是 explicit 显式的
 
-但是对于计算机视觉，可以通过多视角图片等还原 3D 形状 Structure Formation
+但是对于计算机视觉，可以通过多视角图片等还原 3D 形状 Structure Formation<br>
 还可以用深度传感器直接感知距离，用激光雷达生成空间点云
 
 有了显式的 3D 信息，就可以很准确的指导行动，比如机械臂、自动驾驶
@@ -22,32 +22,32 @@ From 2D to 3D
 
 ![[CV导论/imgs/img8/image.png]]
 
-pixel $\rightarrow$ voxel 体素
+pixel $\rightarrow$ voxel 体素<br>
 这样以来，对于同一物体，可以有很多的 3D representation
 
-Q: depth 是不是 3D？
-A: 其实是 2.5D，涉及到 2D 与 3D 的联系
+Q: depth 是不是 3D？<br>
+A: 其实是 2.5D，涉及到 2D 与 3D 的联系<br>
 2D 是 3D的投影，3D 可以从 2D 还原或生成
 
 # Camera Model
 
 拍照过程就是从 3D 到 2D，这可以用数学进行建模
 
-如果直接用一个像屏接收，那物体一个点射出的光会打到很多位置，这就乱了
+如果直接用一个像屏接收，那物体一个点射出的光会打到很多位置，这就乱了<br>
 我们想产生一一对应的效果，考虑用小孔成像的方式
 
-![[CV导论/imgs/img8/image-1.png|645x285]]
+![[CV导论/imgs/img8/image-1.png]]
 
 这个孔就叫 aperture ，这个相机叫 pinhole camera
 
-![[CV导论/imgs/img8/image-2.png|651x405]]
+![[CV导论/imgs/img8/image-2.png]]
 
-将孔的位置设为原点 O，考虑将空间中一点 $P$ 投影到光屏上一点 $P'$
+将孔的位置设为原点 O，考虑将空间中一点 $P$ 投影到光屏上一点 $P'$ <br>
 其中 x y 为水平竖直方向，z 为沿着光轴的方向
 
-![[CV导论/imgs/img8/image-3.png|675x259]]
+![[CV导论/imgs/img8/image-3.png]]
 
-
+<br>
 $$
 \begin{align}
 \mathbf{P} = 
@@ -68,20 +68,20 @@ x' &= f \frac{x}{z} \\
 y' &= f \frac{y}{z}
 \end{cases}
 \end{align}
-$$
+$$<br>
 
-但实际上，孔的大小会影响成像效果，理论上应该无限小才是完全清晰的
-实际上孔如果比较大，会产生模糊 blur
+但实际上，孔的大小会影响成像效果，理论上应该无限小才是完全清晰的<br>
+实际上孔如果比较大，会产生模糊 blur<br>
 但要是太小了，那透过的光太少了，太暗了
 
-可以通过加透镜 lens 解决这个矛盾
-把物体上一个点射出的很多条光线，经过透镜仍然可以汇聚到一个点，
+可以通过加透镜 lens 解决这个矛盾<br>
+把物体上一个点射出的很多条光线，经过透镜仍然可以汇聚到一个点，<br>
 这就保证了亮度，而且一一对应
 
-实际上只有在一定范围内（景深）的物体成像才是比较清晰的
+实际上只有在一定范围内（景深）的物体成像才是比较清晰的<br>
 在范围里叫 in foucus，超出范围的叫 out of focus
 
-![[CV导论/imgs/img8/image-4.png|700x273]]
+![[CV导论/imgs/img8/image-4.png]]
 
 如果不是近轴光线，会产生畸变 distortion
 
@@ -92,7 +92,7 @@ $$
 - 内参 Intrinsics ：制造时就定下来了
 - 外参 Extrinsics：受拍照时相机的位置、朝向等影响
 
-![[CV导论/imgs/img8/image-6.png|698x455]]
+![[CV导论/imgs/img8/image-6.png]]
 
 ## Camera Intrinsics
 
@@ -100,38 +100,38 @@ $$
 
 ![[CV导论/imgs/img8/image-7.png]]
 
-但是，得到的 $x'$ 和 $y'$ 是以光轴在光屏上的投影点为中心的
-实际上，图像的原点并不是这个点，还要转换到图像坐标
-为此，需要加一个平移项
-$$(x, y, z) \rightarrow \left(f \frac{x}{z} + c_x,\ f \frac{y}{z} + c_y\right)$$
+但是，得到的 $x'$ 和 $y'$ 是以光轴在光屏上的投影点为中心的<br>
+实际上，图像的原点并不是这个点，还要转换到图像坐标<br>
+为此，需要加一个平移项<br>
+<br>$$(x, y, z) \rightarrow \left(f \frac{x}{z} + c_x,\ f \frac{y}{z} + c_y\right)$$<br>
 而且，计算机里的图像是按照像素储存的，还要将坐标转换为像素位置
-$$
+<br>$$
 (x, y, z) \rightarrow \left(\alpha \frac{x}{z} + c_x,\ \beta \frac{y}{z} + c_y\right) \\
-$$
-$$\alpha = fk,\ \beta = fl$$
+$$<br>
+<br>$$\alpha = fk,\ \beta = fl$$<br>
 其中系数 $k, l$ 单位是 pixel/m ， $f$ 单位是 m  
 
-称这种变换为**投影变换 projective transformation**
-直观感受上，因为除了 $z$ ，会产生近大远小的效果
-这也说明这种变换不是线性的
+称这种变换为**投影变换 projective transformation**<br>
+直观感受上，因为除了 $z$ ，会产生近大远小的效果<br>
+这也说明这种变换不是线性的<br>
 但我们希望是线性的，因为这样就能用矩阵表示
 
-考虑从欧几里得坐标 E 变为齐次坐标 H
-欧氏坐标 $\rightarrow$ 齐次坐标
-$$(x, y, z) \implies \begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix}$$
-齐次坐标 $\rightarrow$ 欧氏坐标
-$$\begin{bmatrix} x \\ y \\ z \\ w \end{bmatrix} \implies (x/w, y/w, z/w)$$
-变换后的坐标添加一个占位的齐次项 1 ，再都乘 $z$ ，原始坐标也变成齐次坐标
-$$
+考虑从欧几里得坐标 E 变为齐次坐标 H<br>
+欧氏坐标 $\rightarrow$ 齐次坐标<br>
+<br>$$(x, y, z) \implies \begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix}$$<br>
+齐次坐标 $\rightarrow$ 欧氏坐标<br>
+<br>$$\begin{bmatrix} x \\ y \\ z \\ w \end{bmatrix} \implies (x/w, y/w, z/w)$$<br>
+变换后的坐标添加一个占位的齐次项 1 ，再都乘 $z$ ，原始坐标也变成齐次坐标<br>
+<br>$$
 \begin{align}
 P' = \left(\alpha \frac{x}{z} + c_x, \beta \frac{y}{z} + c_y\right) 
 &\to P_h' = (\alpha x + c_x z, \beta y + c_y, z)\\
 \\
 P = (x, y, z) &\to P_h = (x, y, z, 1)
 \end{align}
-$$
-这样这个变换就能用矩阵表示
-$$
+$$<br>
+这样这个变换就能用矩阵表示<br>
+<br>$$
 P_h' = 
 \begin{bmatrix}
 \alpha x + c_x z \\
@@ -150,34 +150,34 @@ y \\
 z \\
 1
 \end{bmatrix}
-$$
-$$
+$$<br>
+<br>$$
 M =
 \begin{bmatrix}
 \alpha & 0 & c_x & 0 \\
 0 & \beta & c_y & 0 \\
 0 & 0 & 1 & 0
 \end{bmatrix}
-$$
+$$<br>
 
-把 M 里边的非零块提取出来，称为 K
-这个 K 就是相机的**内参矩阵 camera intrinsics**
-$$
+把 M 里边的非零块提取出来，称为 K<br>
+这个 K 就是相机的**内参矩阵 camera intrinsics**<br>
+<br>$$
 K =
 \begin{bmatrix}
 \alpha & 0 & c_x\\
 0 & \beta & c_y\\
 0 & 0 & 1
 \end{bmatrix}
-$$
-$$where\ \alpha = fk,\ \beta = fl$$
-则这个变换简写为
-$$P' = MP = K \begin{bmatrix} I & 0 \end{bmatrix} P$$
+$$<br>
+<br>$$where\ \alpha = fk,\ \beta = fl$$<br>
+则这个变换简写为<br>
+<br>$$P' = MP = K \begin{bmatrix} I & 0 \end{bmatrix} P$$<br>
 
-对于 K ，可引入一些修正
+对于 K ，可引入一些修正<br>
 比如说如果 film 存在一些偏移导致 x 与 y 轴不平行，就可以这样
 
-![[CV导论/imgs/img8/image-8.png|555x373]]
+![[CV导论/imgs/img8/image-8.png]]
 
 这时候内参矩阵就有 5 个自由度
 
