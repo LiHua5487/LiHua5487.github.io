@@ -1,14 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title }}</title>
-    <!-- 添加 MathJax 配置文件 -->
-    {% include mathjax_support.html %}
-</head>
-<body style="margin: 0 auto; max-width: 800px; padding: 0 20px;">
-    <!-- 页面内容 -->
-    {{ content }}
-</body>
-</html>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        TeX: {
+            equationNumbers: { autoNumber: "AMS" }
+        },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [["$","$"], ["\\(","\\)"]],
+            displayMath: [["$$","$$"], ["\\[","\\]"]],
+            processEscapes: true
+        },
+        "HTML-CSS": { fonts: ["TeX"] }
+    });
+    MathJax.Hub.Register.MessageHook("Math Processing Error", function (message) {
+        alert("Math Processing Error: " + message[1]);
+    });
+    MathJax.Hub.Register.MessageHook("TeX parse error", function (message) {
+        alert("Math Processing Error: " + message[1]);
+    });
+</script>
+<script
+    type="text/javascript"
+    async
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
