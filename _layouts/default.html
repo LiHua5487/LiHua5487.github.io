@@ -547,7 +547,6 @@
       const outlineToggle = document.getElementById('outline-toggle');
       const expandOutline = document.getElementById('expand-outline');
       const outlineContainer = document.querySelector('.sidebar-container');
-      const contentArea = document.querySelector('.content-with-sidebar');
       
       // 初始化状态
       let isOutlineHidden = false;
@@ -555,33 +554,24 @@
       // 从localStorage读取状态
       const savedState = localStorage.getItem('outlineState');
       if (savedState === 'hidden') {
-        setTimeout(() => {
-          outlineContainer.classList.add('hidden');
-          expandOutline.classList.add('visible');
-        }, 10);
+        outlineContainer.classList.add('hidden');
+        expandOutline.style.display = 'flex';
         isOutlineHidden = true;
       }
       
       outlineToggle.addEventListener('click', () => {
         outlineContainer.classList.add('hidden');
-        
-        // 添加平滑过渡
-        setTimeout(() => {
-          expandOutline.classList.add('visible');
-        }, 300); // 与CSS过渡时间匹配
-        
+        expandOutline.style.display = 'flex';
         isOutlineHidden = true;
+        // 保存状态
         localStorage.setItem('outlineState', 'hidden');
       });
       
       expandOutline.addEventListener('click', () => {
-        // 先移除隐藏状态
         outlineContainer.classList.remove('hidden');
-        
-        // 平滑隐藏展开按钮
-        expandOutline.classList.remove('visible');
-        
+        expandOutline.style.display = 'none';
         isOutlineHidden = false;
+        // 保存状态
         localStorage.setItem('outlineState', 'visible');
       });
       
@@ -589,11 +579,11 @@
       window.addEventListener('resize', () => {
         if (window.innerWidth <= 1200) {
           outlineContainer.style.display = 'none';
-          expandOutline.classList.remove('visible');
+          expandOutline.style.display = 'none';
         } else {
           outlineContainer.style.display = 'block';
           if (isOutlineHidden) {
-            expandOutline.classList.add('visible');
+            expandOutline.style.display = 'flex';
           }
         }
       });
