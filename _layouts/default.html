@@ -96,6 +96,100 @@
         font-size: 14px;
       }
     }
+
+    /* 侧边栏容器 */
+    .sidebar-container {
+      position: fixed;
+      left: 20px;
+      width: 220px;
+      top: 20px;
+      bottom: 20px;
+      z-index: 100;
+    }
+    /* 返回按钮 */
+    .back-button-container {
+      margin-bottom: 15px;
+    }
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      background-color: #f6f8fa;
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      text-decoration: none;
+      color: #0366d6;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .back-button svg {
+      margin-right: 6px;
+    }
+    .back-button:hover {
+      background-color: #e1e4e8;
+      text-decoration: none;
+    }
+    /* 大纲导航 */
+    .outline-sidebar {
+      background-color: #fff;
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      padding: 15px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .outline-sidebar h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 16px;
+      color: #24292e;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eaecef;
+    }
+    #outline-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    #outline-list li {
+      margin: 8px 0;
+      line-height: 1.4;
+    }
+    #outline-list a {
+      text-decoration: none;
+      color: #0366d6;
+      font-size: 14px;
+      display: block;
+      padding: 4px 0;
+      transition: color 0.2s;
+    }
+    #outline-list a:hover {
+      color: #e36209;
+      text-decoration: underline;
+    }
+    /* 层级缩进 */
+    #outline-list .h2 { padding-left: 0; }
+    #outline-list .h3 { padding-left: 15px; }
+    #outline-list .h4 { padding-left: 30px; }
+    #outline-list .h5 { padding-left: 45px; }
+    #outline-list .h6 { padding-left: 60px; }
+    /* 内容区域调整 */
+    .content-with-sidebar {
+      margin-left: 260px; /* 220px侧边栏 + 40px间距 */
+      padding-right: 20px;
+    }
+    /* 响应式调整 - 在小屏幕上隐藏大纲 */
+    @media (max-width: 1200px) {
+      .sidebar-container {
+        display: none;
+      }
+      
+      .content-with-sidebar {
+        margin-left: 20px;
+      }
+    }
   </style>
   
   <!-- highlight.js 主题：深色主题但保留内联代码背景 -->
@@ -164,8 +258,29 @@
   </style>
 </head>
 <body>
+  <!-- 导航区域 -->
+  <div class="sidebar-container">
+    <!-- 返回按钮 -->
+    <div class="back-button-container">
+      <a href="javascript:history.back()" class="back-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+        返回
+      </a>
+    </div>
+    
+    <!-- 大纲导航 -->
+    <nav id="outline-sidebar" class="outline-sidebar">
+      <h3>文档大纲</h3>
+      <ul id="outline-list"></ul>
+    </nav>
+  </div>
+  
   <!-- 页面内容 -->
-  {{ content }}
+  <div class="content-with-sidebar">
+    {{ content }}
+  </div>
   
   <!-- 加载 highlight.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
@@ -225,6 +340,41 @@
         });
         pre.appendChild(button);
       });
+
+      // 生成大纲导航
+      const outlineList = document.getElementById('outline-list');
+      const headings = document.querySelectorAll('.content-with-sidebar h1, .content-with-sidebar h2, .content-with-sidebar h3, .content-with-sidebar h4, .content-with-sidebar h5, .content-with-sidebar h6');
+      
+      headings.forEach(heading => {
+        // 确保标题有ID
+        if (!heading.id) {
+          heading.id = heading.textContent
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^a-z0-9-]/g, '');
+        }
+        
+        const level = parseInt(heading.tagName.substring(1));
+        const li = document.createElement('li');
+        li.className = `h${level}`;
+        
+        const a = document.createElement('a');
+        a.href = `#${heading.id}`;
+        a.textContent = heading.textContent;
+        
+        li.appendChild(a);
+        outlineList.appendChild(li);
+        
+        // 添加平滑滚动
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.querySelector(heading.tagName.toLowerCase() + '#' + heading.id).scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        });
+      });
+      
     });
   </script>
 
