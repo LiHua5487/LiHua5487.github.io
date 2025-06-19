@@ -104,34 +104,43 @@
       }
     }
 
-    /* 确保所有图片响应式 */
+    /* 基础图片样式 */
     img {
       max-width: 100%;
       height: auto;
       display: block;
       margin: 15px auto;
-      box-sizing: border-box;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      border-radius: 4px;
+      transition: all 0.3s ease;
     }
     
-    /* 移动设备优化 */
-    @media (max-width: 768px) {
-      img {
-        max-width: 95%;
-        margin: 10px auto;
-      }
+    /* 带尺寸图片的特殊样式 */
+    img[data-orig-width] {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 1px solid #eee;
     }
     
-    /* 为加载失败的图片添加样式 */
-    img[src$="#error"] {
-      border: 2px dashed #ff6b6b;
-      background-color: #fff8f8;
-      padding: 15px;
+    /* 图片标题样式 */
+    figure {
+      margin: 20px 0;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    
+    figcaption {
+      font-size: 0.85em;
+      color: #666;
       text-align: center;
+      margin-top: 8px;
+    }
+    
+    /* 错误状态 */
+    .image-error {
+      border: 2px dashed #e74c3c !important;
+      background: #ffefef !important;
+      padding: 15px !important;
+      color: #e74c3c;
       font-style: italic;
-      color: #ff6b6b;
     }
 
     /* 侧边栏容器 */
