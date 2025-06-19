@@ -163,7 +163,7 @@ vector / deque / list
 - 随机存取任何元素都能在常数时间完成
 - 在尾端增删元素具有较佳的性能
 
-![image](程设/img/image.png)
+![image](https://lihua5487.github.io/程设/img/image.png)
 
 ### deque
 
