@@ -486,21 +486,6 @@
           });
         });
         pre.appendChild(button);
-
-        // 大纲导航切换功能
-        const outlineToggle = document.getElementById('outline-toggle');
-        const expandOutline = document.getElementById('expand-outline');
-        const outlineContainer = document.querySelector('.sidebar-container');
-        
-        outlineToggle.addEventListener('click', () => {
-          outlineContainer.classList.add('hidden');
-          expandOutline.style.display = 'flex';
-        });
-        
-        expandOutline.addEventListener('click', () => {
-          outlineContainer.classList.remove('hidden');
-          expandOutline.style.display = 'none';
-        });
       });
 
       // 生成大纲导航
@@ -535,6 +520,21 @@
             block: 'start'
           });
         });
+      });
+
+      // 大纲导航切换功能
+      const outlineToggle = document.getElementById('outline-toggle');
+      const expandOutline = document.getElementById('expand-outline');
+      const outlineContainer = document.querySelector('.sidebar-container');
+      
+      outlineToggle.addEventListener('click', () => {
+        outlineContainer.classList.add('hidden');
+        expandOutline.style.display = 'flex';
+      });
+      
+      expandOutline.addEventListener('click', () => {
+        outlineContainer.classList.remove('hidden');
+        expandOutline.style.display = 'none';
       });
     });
   </script>
