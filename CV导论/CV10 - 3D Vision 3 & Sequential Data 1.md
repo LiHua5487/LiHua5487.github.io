@@ -50,16 +50,16 @@ KP conv 把一些 kernel 放到 ball 的不同位置，对于不被 kernel 涵�
 对于大尺度，Sparse Conv 更常用
 
 Sparse Conv
-- + Kernels are spatial anisotropic
-- + More efficient for indexing and neighbor query
-- + Suitable for large-scale scenes
-- -  Limited resolutions
+- Kernels are spatial anisotropic
+- More efficient for indexing and neighbor query
+- Suitable for large-scale scenes
+- Limited resolutions
 
 Point cloud networks
-- + High resolution
-- + Easier to use and can be the first choice for a quick try
-- -  Slightly lower performance
-- -  Slower if performing FPS and ball query
+- High resolution
+- Easier to use and can be the first choice for a quick try
+- Slightly lower performance
+- Slower if performing FPS and ball query
 
 补充：
 mesh 是 graph ，可以用 GNN 处理
@@ -76,8 +76,6 @@ mesh 是 graph ，可以用 GNN 处理
 
 基本的结构是 **Recurrent Neural Network 循环神经网络**<br>
 除了直接输出，还有 **internal state** ，用于向后传递之前的信息
-
-![[CV导论/imgs/img10/image-3.png|462x208]]![[CV导论/imgs/img10/image-4.png]]
 
 $$
 h_t = f_W(h_{t-1}, x_t)
