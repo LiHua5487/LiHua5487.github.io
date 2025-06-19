@@ -25,7 +25,7 @@
 ## 大一下
 - [计算机视觉导论](https://lihua5487.github.io/CV导论/index)<br>
 - [程序设计实习](https://lihua5487.github.io/程设/index)<br>
-- [人工智能引论](https://lihua5487.github.io/AI引论/index)
+- [人工智能引论](https://lihua5487.github.io/AI引论/index) (暂未移植)
 
 
 
