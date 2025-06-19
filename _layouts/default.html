@@ -104,6 +104,36 @@
       }
     }
 
+    /* 确保所有图片响应式 */
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 15px auto;
+      box-sizing: border-box;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 4px;
+    }
+    
+    /* 移动设备优化 */
+    @media (max-width: 768px) {
+      img {
+        max-width: 95%;
+        margin: 10px auto;
+      }
+    }
+    
+    /* 为加载失败的图片添加样式 */
+    img[src$="#error"] {
+      border: 2px dashed #ff6b6b;
+      background-color: #fff8f8;
+      padding: 15px;
+      text-align: center;
+      font-style: italic;
+      color: #ff6b6b;
+    }
+
     /* 侧边栏容器 */
     .sidebar-container {
       position: fixed;
@@ -447,50 +477,82 @@
   <!-- 修正图片链接格式 -->
   <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // 修正 Obsidian 图片语法处理
-    const contentContainer = document.querySelector('.content-with-sidebar');
-    if (!contentContainer) return;
+    // 基础 URL
+    const BASE_URL = 'https://lihua5487.github.io/';
     
+    // 处理 Obsidian 图片语法
+    const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
+    
+    // 第一步：处理 Obsidian 图片语法
     let contentHtml = contentContainer.innerHTML;
     
-    // 使用更精确的正则表达式匹配
+    // 更精确的正则表达式匹配
     contentHtml = contentHtml.replace(
       /!\[\[([^\]\n]+?)(?:\|(\d+)x(\d+))?\]\]/g,
       (match, path, width, height) => {
-        // 清理路径中的空格和特殊字符
+        // 清理路径
         const cleanedPath = path.trim()
           .replace(/\s+/g, '%20')  // 替换空格为 URL 编码
-          .replace(/^\.\//, '');   // 移除开头的 ./
+          .replace(/^[\\/.\s]+/, '');  // 移除开头的特殊字符
+        
+        // 构建完整 URL
+        const fullImageUrl = `${BASE_URL}${cleanedPath}`;
+        
+        // 计算缩放比例 (最大宽度为容器宽度的 80%)
+        const maxWidth = Math.min(window.innerWidth * 0.8, parseInt(width) || 800);
+        const scaleFactor = width ? maxWidth / parseInt(width) : 1;
+        
+        // 计算缩放后的尺寸
+        const scaledWidth = Math.round(width ? parseInt(width) * scaleFactor : maxWidth);
+        const scaledHeight = height ? Math.round(parseInt(height) * scaleFactor) : 'auto';
         
         // 构建图片标签
-        let imgTag = `<img src="${cleanedPath}" alt="${path.split('/').pop()}" `;
-        
-        if (width && height) {
-          imgTag += `width="${width}" height="${height}" `;
-        }
-        
-        imgTag += 'style="max-width:100%;height:auto;">';
-        return imgTag;
+        return `<img src="${fullImageUrl}" 
+                 alt="${path.split('/').pop()}" 
+                 style="max-width: ${maxWidth}px; 
+                        width: ${scaledWidth}px; 
+                        height: ${scaledHeight}px; 
+                        display: block; 
+                        margin: 10px auto; 
+                        border: 1px solid #eee;
+                        box-sizing: border-box;">`;
       }
     );
-    contentHtml = contentHtml
-      .replace(/td>\s*<td/g, 'td><td')  // 修复表格问题
-      .replace(/<td>(\d+)x(\d+)<\/td>/g, ''); // 移除残留的尺寸文本
+    
+    // 应用处理后的内容
     contentContainer.innerHTML = contentHtml;
-  
+    
+    // 第二步：添加图片加载错误处理
     document.querySelectorAll('img').forEach(img => {
-      const src = img.getAttribute('src');
-      
-      // 修复相对路径问题
-      if (src && !src.startsWith('http') && !src.startsWith('/')) {
-        // 添加仓库基础路径
-        const basePath = "https://lihua5487.github.io/"
-          .split('/')
-          .slice(0, -1)
-          .join('/');
+      img.addEventListener('error', function() {
+        console.error('图片加载失败:', this.src);
+        this.alt = `[图片加载失败: ${this.src.replace(BASE_URL, '')}]`;
+        this.style.border = '2px dashed red';
+        this.style.backgroundColor = '#fff8f8';
+        this.style.padding = '10px';
+        this.style.textAlign = 'center';
+      });
+    });
+    
+    // 第三步：添加响应式缩放
+    window.addEventListener('resize', function() {
+      document.querySelectorAll('img').forEach(img => {
+        const originalWidth = img.dataset.origWidth || img.naturalWidth;
+        const originalHeight = img.dataset.origHeight || img.naturalHeight;
         
-        img.src = `${basePath}/${src}`.replace(/\/\//g, '/');
-      }
+        if (originalWidth && originalHeight) {
+          const maxWidth = Math.min(window.innerWidth * 0.8, originalWidth);
+          const scaleFactor = maxWidth / originalWidth;
+          
+          img.style.maxWidth = `${maxWidth}px`;
+          img.style.width = `${Math.round(originalWidth * scaleFactor)}px`;
+          img.style.height = `${Math.round(originalHeight * scaleFactor)}px`;
+          
+          // 保存原始尺寸供下次调整使用
+          img.dataset.origWidth = originalWidth;
+          img.dataset.origHeight = originalHeight;
+        }
+      });
     });
   });
   </script>
