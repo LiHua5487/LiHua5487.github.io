@@ -143,6 +143,27 @@
       padding-right: 20px;
       max-width: 1000px;
     }
+
+    .sidebar-container.hidden ~ .content-with-sidebar {
+      margin-left: 40px;
+      max-width: calc(100% - 60px);
+    }
+    
+    /* 响应式 */
+    @media (max-width: 1200px) {
+      .sidebar-container {
+        display: none;
+      }
+      
+      .content-with-sidebar {
+        margin-left: 20px;
+        max-width: calc(100% - 40px);
+      }
+      
+      .expand-outline-btn {
+        display: none !important;
+      }
+    }
     
     /* 返回按钮 */
     .back-button-container {
@@ -408,7 +429,7 @@
         <div class="outline-title">页面大纲</div>
         <button class="outline-toggle" id="outline-toggle">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
+            <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
           </svg>
         </button>
       </div>
@@ -527,14 +548,44 @@
       const expandOutline = document.getElementById('expand-outline');
       const outlineContainer = document.querySelector('.sidebar-container');
       
+      // 初始化状态
+      let isOutlineHidden = false;
+      
+      // 从localStorage读取状态
+      const savedState = localStorage.getItem('outlineState');
+      if (savedState === 'hidden') {
+        outlineContainer.classList.add('hidden');
+        expandOutline.style.display = 'flex';
+        isOutlineHidden = true;
+      }
+      
       outlineToggle.addEventListener('click', () => {
         outlineContainer.classList.add('hidden');
         expandOutline.style.display = 'flex';
+        isOutlineHidden = true;
+        // 保存状态
+        localStorage.setItem('outlineState', 'hidden');
       });
       
       expandOutline.addEventListener('click', () => {
         outlineContainer.classList.remove('hidden');
         expandOutline.style.display = 'none';
+        isOutlineHidden = false;
+        // 保存状态
+        localStorage.setItem('outlineState', 'visible');
+      });
+      
+      // 响应窗口大小变化
+      window.addEventListener('resize', () => {
+        if (window.innerWidth <= 1200) {
+          outlineContainer.style.display = 'none';
+          expandOutline.style.display = 'none';
+        } else {
+          outlineContainer.style.display = 'block';
+          if (isOutlineHidden) {
+            expandOutline.style.display = 'flex';
+          }
+        }
       });
     });
   </script>
