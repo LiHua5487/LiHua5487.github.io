@@ -295,7 +295,7 @@
   
   <!-- 页面内容 -->
   <div class="content-with-sidebar">
-    {{ content | obsidian_image }}
+    {{ content }}
   </div>
   
   <!-- 加载 highlight.js -->
@@ -438,10 +438,43 @@
   </script>
   
   <!-- MathJax 加载 -->
-  <script 
+  <script>
     id="MathJax-script" 
     async 
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
   </script>
+
+  <!-- 修正图片链接格式 -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 处理 Obsidian 图片语法
+    document.querySelectorAll('.content-with-sidebar').forEach(el => {
+      el.innerHTML = el.innerHTML.replace(
+        /!\[\[([^\|\]]+)(?:\|(\d+)x(\d+))?\]\]/g,
+        (match, path, width, height) => {
+          // 替换空格为 URL 编码
+          const imgPath = path.replace(/\s/g, '%20');
+          
+          // 构建图片标签
+          if (width && height) {
+            return `<img src="${imgPath}" alt="${path.split('/').pop()}" 
+                    width="${width}" height="${height}" 
+                    style="max-width:100%;height:auto;">`;
+          }
+          return `<img src="${imgPath}" alt="${path.split('/').pop()}" 
+                  style="max-width:100%;height:auto;">`;
+        }
+      );
+    });
+    
+    // 处理相对路径图片
+    document.querySelectorAll('img').forEach(img => {
+      if (!img.src.includes('://') && !img.src.startsWith('/')) {
+        img.src = '{{ site.baseurl }}/' + img.src;
+      }
+    });
+  });
+  </script>
+
 </body>
 </html>
