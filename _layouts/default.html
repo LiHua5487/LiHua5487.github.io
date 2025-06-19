@@ -489,10 +489,10 @@
     const BASE_URL = 'https://lihua5487.github.io/';
     const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
     
-    // 第一步：处理所有 Obsidian 图片语法（带尺寸和不带尺寸）
+    // 第一步：精确处理 Obsidian 图片语法
     let contentHtml = contentContainer.innerHTML;
     
-    // 增强的正则表达式 - 处理带尺寸参数的语法
+    // 增强的正则表达式 - 精确匹配图片语法
     contentHtml = contentHtml.replace(
       /!\[\[([^\]]+?)(?:\|(\d+)x(\d+))?\]\]/g, 
       (match, path, width, height) => {
@@ -510,34 +510,37 @@
         img.alt = altText;
         img.loading = 'lazy';
         
-        // 设置缩放样式
+        // 设置基础样式
         img.style.maxWidth = '100%';
         img.style.height = 'auto';
         img.style.display = 'block';
         img.style.margin = '15px auto';
         img.style.borderRadius = '4px';
         img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+        img.style.border = '1px solid #eee';
         
-        // 如果有尺寸参数，添加数据属性但不直接使用
+        // 存储原始尺寸用于响应式缩放
         if (width && height) {
           img.dataset.origWidth = width;
           img.dataset.origHeight = height;
         }
         
-        // 返回图片的 outerHTML
+        // 返回图片的 HTML（不添加任何额外元素）
         return img.outerHTML;
       }
     );
     
-    // 第二步：移除残留的尺寸文本
+    // 第二步：专门处理残留的尺寸文本（不再使用通用替换）
+    // 只移除出现在图片语法位置的尺寸文本，不影响其他内容
     contentHtml = contentHtml
-      .replace(/\s*(\d+)x(\d+)\s*/g, '')  // 移除单独的尺寸文本
-      .replace(/<td>\s*(\d+)x(\d+)\s*<\/td>/g, '');  // 移除表格中的尺寸文本
+      .replace(/(!\[\[[^\]]+?)\|\d+x\d+\]\]/g, '$1]]')  // 移除带尺寸的语法残留
+      .replace(/!\[\[([^\]]+?)\]\](?:\s*\(\d+x\d+\))?/g, '') // 清理残留文本
+      .replace(/<td>\s*!?\[\[[^\]]*?\]\]\s*<\/td>/g, ''); // 清除表格单元格残留
     
     // 应用处理后的内容
     contentContainer.innerHTML = contentHtml;
     
-    // 第三步：图片加载后应用响应式缩放
+    // 第三步：图片加载后应用响应式缩放（不添加标题）
     document.querySelectorAll('img[data-orig-width]').forEach(img => {
       // 添加加载完成后的尺寸调整
       img.onload = function() {
@@ -557,39 +560,26 @@
           // 应用缩放
           img.style.width = `${Math.round(origWidth * scale)}px`;
           img.style.height = `${Math.round(origHeight * scale)}px`;
-          
-          // 添加标题显示原始尺寸
-          const figure = document.createElement('figure');
-          figure.style.margin = '15px auto';
-          figure.style.textAlign = 'center';
-          
-          const figcaption = document.createElement('figcaption');
-          figcaption.style.fontSize = '0.9em';
-          figcaption.style.color = '#666';
-          figcaption.textContent = `${origWidth}×${origHeight} (缩放比例: ${Math.round(scale * 100)}%)`;
-          
-          img.parentNode.replaceChild(figure, img);
-          figure.appendChild(img);
-          figure.appendChild(figcaption);
         }
       };
+      
+      // 如果图片已经加载完成，立即执行缩放
+      if (img.complete) {
+        img.onload();
+      }
       
       // 错误处理
       img.onerror = function() {
         this.alt = `[图片加载失败: ${this.src.replace(BASE_URL, '')}]`;
-        this.style = 'border: 2px dashed red; padding: 10px; background: #fff8f8;';
-        this.parentNode.replaceChild(
-          document.createTextNode(this.alt),
-          this
-        );
+        this.style = 'border: 2px dashed red; padding: 10px; background: #fff8f8; display: block; margin: 15px auto; max-width: 100%;';
       };
     });
     
-    // 第四步：添加窗口大小调整的响应式处理
+    // 第四步：窗口大小调整时重新缩放
     window.addEventListener('resize', function() {
       document.querySelectorAll('img[data-orig-width]').forEach(img => {
         if (img.complete) {
-          img.onload(); // 重新触发缩放计算
+          img.onload();
         }
       });
     });
