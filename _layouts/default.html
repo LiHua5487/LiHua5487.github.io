@@ -246,6 +246,81 @@
       width: 1px;
       background-color: #eaecef;
     }
+
+    /* 大纲导航标题区域样式 */
+    .outline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eaecef;
+    }
+    
+    .outline-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #24292e;
+    }
+    
+    /* 大纲导航隐藏按钮样式 */
+    .outline-toggle {
+      width: 28px;
+      height: 28px;
+      background: #f6f8fa;
+      border: 1px solid #e1e4e8;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: all 0.2s;
+    }
+    
+    .outline-toggle:hover {
+      background: #e1e4e8;
+    }
+    
+    .outline-toggle svg {
+      width: 12px;
+      height: 12px;
+      transition: transform 0.3s;
+    }
+    
+    /* 隐藏状态下的展开按钮 */
+    .expand-outline-btn {
+      position: fixed;
+      top: 20px;
+      left: 0;
+      width: 30px;
+      height: 30px;
+      background: white;
+      border: 1px solid #e1e4e8;
+      border-left: none;
+      border-radius: 0 4px 4px 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 90;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .expand-outline-btn:hover {
+      background: #f6f8fa;
+    }
+    
+    /* 侧边栏隐藏状态 */
+    .sidebar-container.hidden {
+      width: 0;
+      overflow: hidden;
+      border: none;
+    }
+    
+    .sidebar-container.hidden .outline-sidebar {
+      opacity: 0;
+    }
   </style>
   
   <!-- highlight.js 主题：深色主题但保留内联代码背景 -->
@@ -328,10 +403,26 @@
     
     <!-- 大纲导航 -->
     <nav id="outline-sidebar" class="outline-sidebar">
-      <h3>页面大纲</h3>
+      <!-- 添加标题栏和隐藏按钮 -->
+      <div class="outline-header">
+        <div class="outline-title">页面大纲</div>
+        <button class="outline-toggle" id="outline-toggle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
+          </svg>
+        </button>
+      </div>
+      
       <ul id="outline-list"></ul>
     </nav>
   </div>
+  
+  <!-- 大纲导航展开按钮 -->
+  <button class="expand-outline-btn" id="expand-outline">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
+    </svg>
+  </button>
   
   <!-- 页面内容 -->
   <div class="content-with-sidebar">
@@ -395,6 +486,21 @@
           });
         });
         pre.appendChild(button);
+
+        // 大纲导航切换功能
+        const outlineToggle = document.getElementById('outline-toggle');
+        const expandOutline = document.getElementById('expand-outline');
+        const outlineContainer = document.querySelector('.sidebar-container');
+        
+        outlineToggle.addEventListener('click', () => {
+          outlineContainer.classList.add('hidden');
+          expandOutline.style.display = 'flex';
+        });
+        
+        expandOutline.addEventListener('click', () => {
+          outlineContainer.classList.remove('hidden');
+          expandOutline.style.display = 'none';
+        });
       });
 
       // 生成大纲导航
@@ -503,8 +609,6 @@
     
     // 处理 Obsidian 图片语法
     const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
-    
-    // 第一步：处理 Obsidian 图片语法
     let contentHtml = contentContainer.innerHTML;
     
     // 更精确的正则表达式匹配
@@ -543,7 +647,7 @@
     // 应用处理后的内容
     contentContainer.innerHTML = contentHtml;
     
-    // 第二步：添加图片加载错误处理
+    // 添加图片加载错误处理
     document.querySelectorAll('img').forEach(img => {
       img.addEventListener('error', function() {
         console.error('图片加载失败:', this.src);
@@ -555,7 +659,7 @@
       });
     });
     
-    // 第三步：添加响应式缩放
+    // 添加响应式缩放
     window.addEventListener('resize', function() {
       document.querySelectorAll('img').forEach(img => {
         const originalWidth = img.dataset.origWidth || img.naturalWidth;
