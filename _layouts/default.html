@@ -187,25 +187,75 @@
         hljs.highlightElement(el);
       });
       
-      // 添加复制按钮（位置优化）
+      // 添加复制按钮（内联SVG）
       document.querySelectorAll('pre').forEach((pre) => {
-        // 如果已有复制按钮则跳过
         if (pre.querySelector('.copy-button')) return;
         
         const button = document.createElement('button');
         button.className = 'copy-button';
-        button.innerHTML = '复制';
+        button.setAttribute('aria-label', '复制代码');
+        button.setAttribute('title', '复制代码');
+        
+        // 内联SVG图标
+        button.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        `;
+        
         button.addEventListener('click', () => {
           const code = pre.querySelector('code').innerText;
           navigator.clipboard.writeText(code).then(() => {
-            button.innerHTML = '已复制!';
-            setTimeout(() => button.innerHTML = '复制', 2000);
+            // 复制成功反馈（可选动画）
+            button.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            `;
+            setTimeout(() => {
+              button.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              `;
+            }, 2000);
           });
         });
         pre.appendChild(button);
       });
     });
   </script>
+
+  <!-- 对应调整按钮样式 -->
+  <style>
+    .copy-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: all 0.3s ease;
+    }
+    
+    .copy-button:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .copy-button svg {
+      stroke: #adbac7;
+    }
+  </style>
   
   <!-- MathJax 配置 -->
   <script>
