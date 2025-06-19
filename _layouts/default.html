@@ -276,28 +276,6 @@
       width: 1px;
       background-color: #eaecef;
     }
-
-    /* 折叠样式 */
-    #outline-list ul {
-      list-style: none;
-      padding-left: 15px;
-      margin: 5px 0;
-      transition: all 0.3s;
-    }
-    
-    #outline-list ul.collapsed {
-      display: none;
-    }
-    
-    .toggle-icon.collapsed svg {
-      transform: rotate(-90deg);
-    }
-    
-    .toggle-icon svg {
-      transition: transform 0.3s;
-      vertical-align: middle;
-    }
-
   </style>
   
   <!-- highlight.js 主题：深色主题但保留内联代码背景 -->
@@ -482,27 +460,6 @@
           });
         });
       });
-
-      // 大纲折叠功能
-      document.querySelectorAll('#outline-list .h3, #outline-list .h4, #outline-list .h5, #outline-list .h6').forEach(item => {
-        const parent = item.closest('li');
-        const toggle = document.createElement('span');
-        toggle.className = 'toggle-icon';
-        toggle.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 18l6-6-6-6"/></svg>';
-        toggle.style.cssText = 'position:absolute;left:-12px;top:5px;cursor:pointer;opacity:0.6;';
-        
-        parent.insertBefore(toggle, parent.firstChild);
-        
-        toggle.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const subItems = parent.querySelector('ul');
-          if (subItems) {
-            subItems.classList.toggle('collapsed');
-            toggle.classList.toggle('collapsed');
-          }
-        });
-      });
-      
     });
   </script>
 
