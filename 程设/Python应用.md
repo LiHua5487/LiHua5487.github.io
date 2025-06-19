@@ -87,7 +87,6 @@ soup = bs4.BeautifulSoup(str,"html.parser") # 构建bs4对象
 ```
 这里的 `'html.parser'` 是python内置的html解释器，指定如何去处理这个html
 
-
 而后，使用成员函数去查找具体内容
 
 `find` ：查找第一个符合的tag，返回一个对象，具体类型为 `bs4.element.Tag`
@@ -304,13 +303,10 @@ cheap_fruits = fruit_prices[fruit_prices < 5]
 ```
 
 以及一些其它的函数
-`Series.tolist()`：把值的部分转为列表，如果直接用 `list()` 也是这样
-
-`Series.sum()` `Series.min()` `Series.max()` `Series.mean()` `Series.median()`：和、最小值、最大值、平均值、中位数
-
-`Series.idxmax()`、`Series.argmax()`：最大元素的标签和下标
-
-`pd.concat()`：拼接两个Series，不改变前者
+- `Series.tolist()`：把值的部分转为列表，如果直接用 `list()` 也是这样
+- `Series.sum()` `Series.min()` `Series.max()` `Series.mean()` `Series.median()`：和、最小值、最大值、平均值、中位数
+- `Series.idxmax()`、`Series.argmax()`：最大元素的标签和下标
+- `pd.concat()`：拼接两个Series，不改变前者
 
 
 `DataFrame` ：带行列标签的二维表格，每一行/列都是一个Series
