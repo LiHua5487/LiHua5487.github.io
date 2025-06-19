@@ -210,6 +210,82 @@
       background-color: #e1e4e8;
       text-decoration: none;
     }
+
+    /* 侧边栏切换按钮 */
+    .sidebar-toggle {
+      position: absolute;
+      top: 20px;
+      right: -30px; /* 定位在侧边栏右侧 */
+      width: 30px;
+      height: 40px;
+      background: #f6f8fa;
+      border: 1px solid #e1e4e8;
+      border-left: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 101;
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-toggle:hover {
+      background: #e1e4e8;
+    }
+    
+    /* 隐藏其中一个图标 */
+    .sidebar-toggle .hide-icon {
+      display: none;
+    }
+    
+    /* 侧边栏隐藏状态 */
+    .sidebar-container.hidden {
+      width: 0;
+      overflow: hidden;
+    }
+    
+    .sidebar-container.hidden .sidebar-content {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    
+    /* 隐藏状态下的切换按钮位置 */
+    .sidebar-container.hidden .sidebar-toggle {
+      right: 0;
+      border-radius: 0 4px 4px 0;
+      border-left: 1px solid #e1e4e8;
+    }
+    
+    /* 隐藏状态下显示不同的图标 */
+    .sidebar-container:not(.hidden) .show-icon {
+      display: block;
+    }
+    .sidebar-container:not(.hidden) .hide-icon {
+      display: none;
+    }
+    .sidebar-container.hidden .show-icon {
+      display: none;
+    }
+    .sidebar-container.hidden .hide-icon {
+      display: block;
+    }
+    
+    /* 侧边栏内容动画 */
+    .sidebar-content {
+      transition: all 0.3s ease;
+    }
+    
+    /* 内容区域动画 */
+    .content-with-sidebar {
+      transition: margin-left 0.3s ease;
+    }
+    
+    /* 当侧边栏隐藏时的内容区域 */
+    .sidebar-container.hidden ~ .content-with-sidebar {
+      margin-left: 40px; /* 只保留很小的左侧间距 */
+    }
     
     /* 大纲导航 */
     .outline-sidebar {
@@ -355,6 +431,16 @@
         返回
       </a>
     </div>
+
+    <!-- 折叠按钮 -->
+    <button id="sidebar-toggle" class="sidebar-toggle">
+      <svg class="toggle-icon show-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+      </svg>
+      <svg class="toggle-icon hide-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+      </svg>
+    </button>
     
     <!-- 大纲导航 -->
     <nav id="outline-sidebar" class="outline-sidebar">
@@ -425,6 +511,24 @@
           });
         });
         pre.appendChild(button);
+
+        // 侧边栏切换功能
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarContainer = document.querySelector('.sidebar-container');
+        const contentArea = document.querySelector('.content-with-sidebar');
+        
+        // 从 localStorage 读取用户偏好
+        const isSidebarHidden = localStorage.getItem('sidebarHidden') === 'true';
+        if (isSidebarHidden) {
+          sidebarContainer.classList.add('hidden');
+        }
+        
+        sidebarToggle.addEventListener('click', () => {
+          sidebarContainer.classList.toggle('hidden');
+          
+          // 保存用户偏好
+          localStorage.setItem('sidebarHidden', sidebarContainer.classList.contains('hidden'));
+        });
       });
 
       // 生成大纲导航
