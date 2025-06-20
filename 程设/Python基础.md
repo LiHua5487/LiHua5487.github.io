@@ -11,6 +11,14 @@ b = round(x, -1) # 保留到十位
 c = f"{x:.2f}" # 保留两位小数，位数不能是负数
 ```
 
+计算最大公因数
+```python
+def gcd(m, n):
+    while n != 0:
+        m, n = n, m % n
+    return m
+```
+
 ---
 
 关于数据类型的获取与判断
@@ -131,6 +139,10 @@ a = a + [4] # a变成一个新列表，b还是[1,2,3]
 | `__or__`      | 或                | `__and__`      | and与                  |
 | `__xor__`     | ^异或              | `__invert__`   | ~否                    |
 | `__str__`     | 强制转字符串           | `__repr__`     | 强制转换可执行字符串            |
+
+注：
+- `setitem` 的重载格式为 `def __setitem__(self, key, val):`
+- 当 `print(obj)` 或 `str(obj)` 时需要重载 `__str__`
 
 一个类的构造和析构函数只能有一个
 
@@ -410,6 +422,54 @@ print(counter1())  # >> 2
 print(counter2())  # >> 1
 print(counter2())  # >> 2
 ```
+
+这里举一个作业中的例子，假设我们提前定义了 `f1(x)` ... `f5(x)` <br>
+现在我们想实现函数组合功能，例如输入 `f1 f2 f3` ，再输入 `4` ，就可以输出 `f3(f2(f1(4)))` <br>
+已知的代码如下，需补全 `accfunc`
+```python
+def accfunc(f):
+    # === TO DO ===
+
+while True:
+    try:
+        s = input()
+        n = int(input())
+        s = s.split()
+        k = accfunc
+        for x in s:
+            k = k(eval(x))
+        print(k()(n))
+    except:  #读到 EOF 产生异常
+        break
+```
+
+一种解决方案如下
+```python
+def accfunc(f):
+    def inner(g=None):
+        if g is None:
+            return f
+        else:
+            new_func = accfunc(lambda x: g(f(x)))
+            return new_func
+    return inner
+```
+
+当我们按照例子输入后，首先，对于循环执行 `k = k(eval(x))` 的部分
+
+一开始 `k = accfunc, x = f1` ，执行 `k(eval(x))` 即 `accfunc(f1)` <br>
+这会返回一个 `inner` ，其记住了外层变量 `f1` <br>
+我们不妨将其记为 `inner with f1`
+
+第二步时 `k = inner with f1, x = f2` ，执行 `inner(f2)` <br>
+这会进入执行 `accfunc(lambda x: f2(f1(x)))` 的分支<br>
+执行后 `new_func` 就是一个 `inner` 函数，携带外部变量 `f2(f1)`
+
+第三步与第二步同理，最后 `k = inner with f3(f2(f1))`
+
+当输出 `k()(n)` 时，先执行 `k()` ，由于输入为空，所以会直接返回外部变量，即 `f3(f2(f1))` 而后应用于参数 `n` ，就得到 `f3(f2(f1(n)))`
+
+---
 
 现在讲装饰器，假设要写很多函数，但这些函数有一部分都是差不多的，如果每次写一个新的函数都要再写这么一段，太烦人了
 
