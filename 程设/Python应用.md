@@ -172,21 +172,21 @@ highlight_links = soup.select(".external-link.highlight")
 ```html
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>示例网页</title>
-    </head>
-    <body>
-        <div class="content">
-            <h1>文章标题</h1>
-            <p id="intro">这是一段简介内容。</p>
-            <p id="main-content">这里是主体内容，包含<b>加粗文本</b>。</p>
-            <a href="https://example.com/page1" class="external-link">链接到页面1</a>
-            <a href="https://example.com/page2" class="external-link highlight">链接到页面2</a>
-        </div>
-        <div class="footer">
-            <p>版权所有 © 2023</p>
-        </div>
-    </body>
+    <head>
+        <title>示例网页</title>
+    </head>
+    <body>
+        <div class="content">
+            <h1>文章标题</h1>
+            <p id="intro">这是一段简介内容。</p>
+            <p id="main-content">这里是主体内容，包含<b>加粗文本</b>。</p>
+            <a href="https://example.com/page1" class="external-link">链接到页面1</a>
+            <a href="https://example.com/page2" class="external-link highlight">链接到页面2</a>
+        </div>
+        <div class="footer">
+            <p>版权所有 © 2023</p>
+        </div>
+    </body>
 </html>
 ```
 
