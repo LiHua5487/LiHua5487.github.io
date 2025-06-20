@@ -177,11 +177,24 @@
       border-radius: 4px;
     }
 
-    /* 百分比图片容器 */
-    .image-percentage-container {
+    /* 缩放图片样式 */
+    .scaled-image {
+      display: block;
+      margin: 15px auto;
+      box-sizing: border-box;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 4px;
+      max-width: 100%;
+      transform-origin: center center; /* 确保从中心缩放 */
+    }
+    
+    /* 防止缩放后的图片溢出容器 */
+    .image-scaling-container {
+      overflow: hidden;
+      margin: 15px auto;
       display: flex;
       justify-content: center;
-      margin: 15px auto;
     }
     
     /* 大纲导航 */
