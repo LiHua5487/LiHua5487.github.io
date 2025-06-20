@@ -687,14 +687,14 @@
     
     // 正则表达式匹配图片
     contentHtml = contentHtml.replace(
-      /!\[\[([^\]]+?)(?:\|([^\]]+?))?\]\]/g,
+      /!\[\[([^\]]+?)(?:\{scale=([^\}]+?)\})?\]\]/g,
       (match, path, scaleSpec) => {
-        // 清理路径
+        // 正确清理路径：保留中文路径，只处理空格和特殊字符
         const cleanedPath = path.trim()
-          .replace(/\s+/g, '%20')
-          .replace(/^[\\/.\s]+/, '');
+          .replace(/\s+/g, '%20')  // 空格转义
+          .replace(/[<>"']/g, ''); // 移除非法字符
         
-        // 构建完整 URL
+        // 构建完整 URL - 不再移除开头斜杠
         const fullImageUrl = `${BASE_URL}${cleanedPath}`;
         const altText = cleanedPath.split('/').pop();
         
@@ -702,10 +702,14 @@
         let style = '';
         
         // 处理缩放比例
-        if (scaleSpec && scaleSpec.endsWith('%')) {
-          const percentage = parseFloat(scaleSpec);
-          if (!isNaN(percentage)) {
-            style = `zoom: ${percentage}%;`;
+        if (scaleSpec) {
+          // 提取数字部分（支持百分比和小数）
+          const scaleValue = scaleSpec.match(/(\d+(\.\d+)?)%?/);
+          if (scaleValue) {
+            const percentage = parseFloat(scaleValue[1]);
+            if (!isNaN(percentage)) {
+              style = `zoom: ${percentage}%;`;
+            }
           }
         }
         
