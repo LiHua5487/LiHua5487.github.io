@@ -466,25 +466,10 @@
             // 为每个导航链接添加点击事件
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    // 对于外部链接直接跳转
-                    if (this.getAttribute('target') === '_blank') return;
-                    
-                    e.preventDefault();
-                    
                     // 移除所有链接的active类
                     navLinks.forEach(link => link.classList.remove('active'));
                     // 添加当前链接的active类
                     this.classList.add('active');
-                    
-                    // 获取目标区域的ID
-                    const targetId = this.getAttribute('href');
-                    const targetSection = document.querySelector(targetId);
-                    
-                    // 平滑滚动到目标位置
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
                     
                     // 在移动设备上，点击导航链接后自动折叠侧边栏
                     if (window.innerWidth <= 992) {
