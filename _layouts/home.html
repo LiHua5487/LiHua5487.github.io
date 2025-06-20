@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="个人主页">
+  <meta name="author" content="xk鼠鼠">
+  <title>主页</title>
+  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      background-color: #f7f7f7;
+    }
+    header {
+      background-color: #4caf50; 
+      color: white; 
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    section.content {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 20px 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    #notes-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .note-box {
+      width: calc(33% - 1rem);
+      background: #e6e6e6;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .note-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .note-box a {
+      text-decoration: none;
+      color: #333;
+    }
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{ site.title }}</h1>
+    <p>{{ site.description }}</p>
+  </header>
+  <section class="content">
+    {{ content }}
+  </section>
+  <footer>
+    <p>© 2023 北京某大学 xk 鼠鼠主页</p>
+  </footer>
+</body>
+</html>
