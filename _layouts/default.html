@@ -686,90 +686,51 @@
     let contentHtml = contentContainer.innerHTML;
     
     // 正则表达式匹配图片
-    document.addEventListener('DOMContentLoaded', function() {
-    // 基础 URL
-    const BASE_URL = 'https://lihua5487.github.io/';
-    
-    // 获取内容区域的最大宽度
-    const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
-    const maxContentWidth = contentContainer.clientWidth - 40; // 留出边距
-    
-    // 处理 Obsidian 图片语法
-    let contentHtml = contentContainer.innerHTML;
-    
-    // 正则表达式匹配
     contentHtml = contentHtml.replace(
-      /!
-$$
-\[([^
-$$
-]+?)(?:\{scale=([^\}]+?)\})?\]\]/g,
+      /!\[\[([^\]]+?)(?:\{scale=([^\}]+?)\})?\]\]/g,
       (match, path, scaleSpec) => {
-        // 正确清理路径
+        // 正确清理路径：保留中文路径，只处理空格和特殊字符
         const cleanedPath = path.trim()
           .replace(/\s+/g, '%20')  // 空格转义
           .replace(/[<>"']/g, ''); // 移除非法字符
         
-        // 构建完整 URL
+        // 构建完整 URL - 不再移除开头斜杠
         const fullImageUrl = `${BASE_URL}${cleanedPath}`;
         const altText = cleanedPath.split('/').pop();
         
-        // 创建占位符元素
-        return `<div class="img-container" data-src="${fullImageUrl}" data-scale="${scaleSpec || '100%'}" data-alt="${altText}">
-                  <div class="img-loading">图片加载中...</div>
-                </div>`;
+        // 默认样式
+        let style = '';
+        
+        // 处理缩放比例
+        if (scaleSpec) {
+          // 提取数字部分（支持百分比和小数）
+          const scaleValue = scaleSpec.match(/(\d+(\.\d+)?)%?/);
+          if (scaleValue) {
+            const percentage = parseFloat(scaleValue[1]);
+            if (!isNaN(percentage)) {
+              style = `zoom: ${percentage}%;`;
+            }
+          }
+        }
+        
+        // 直接返回带有zoom样式的图片标签
+        return `<img src="${fullImageUrl}" alt="${altText}" style="${style}">`;
       }
     );
     
     // 应用处理后的内容
     contentContainer.innerHTML = contentHtml;
     
-    // 动态处理图片加载和缩放
-    document.querySelectorAll('.img-container').forEach(container => {
-      const imgSrc = container.getAttribute('data-src');
-      const scaleSpec = container.getAttribute('data-scale');
-      const altText = container.getAttribute('data-alt');
-      
-      // 创建图片元素
-      const img = new Image();
-      img.alt = altText;
-      img.src = imgSrc;
-      
-      // 解析缩放比例
-      let scalePercentage = 100;
-      if (scaleSpec) {
-        const scaleValue = scaleSpec.match(/(\d+(\.\d+)?)%?/);
-        if (scaleValue) {
-          scalePercentage = parseFloat(scaleValue[1]);
-        }
-      }
-      
-      // 图片加载完成后的处理
-      img.onload = function() {
-        // 移除加载提示
-        container.innerHTML = '';
-        container.appendChild(img);
-        
-        // 计算实际缩放比例
-        const originalWidth = img.naturalWidth;
-        const scaledWidth = originalWidth * (scalePercentage / 100);
-        
-        // 如果缩放后宽度仍超过内容区域，应用二次缩放
-        if (scaledWidth > maxContentWidth) {
-          const finalScale = (maxContentWidth / originalWidth) * 100;
-          img.style.zoom = `${finalScale}%`;
-        } else {
-          img.style.zoom = `${scalePercentage}%`;
-        }
-      };
-      
-      // 图片加载错误处理
-      img.onerror = function() {
-        container.innerHTML = `<div class="img-error">
-          图片加载失败: ${decodeURIComponent(imgSrc.replace(BASE_URL, ''))}
-        </div>`;
-        container.classList.add('error');
-      };
+    // 添加图片加载错误处理
+    document.querySelectorAll('img').forEach(img => {
+      img.addEventListener('error', function() {
+        console.error('图片加载失败:', this.src);
+        this.alt = `[图片加载失败: ${this.src.replace(BASE_URL, '')}]`;
+        this.style.border = '2px dashed red';
+        this.style.backgroundColor = '#fff8f8';
+        this.style.padding = '10px';
+        this.style.textAlign = 'center';
+      });
     });
   });
   </script>
