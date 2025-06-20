@@ -708,7 +708,14 @@
           if (scaleValue) {
             const percentage = parseFloat(scaleValue[1]);
             if (!isNaN(percentage)) {
-              style = `zoom: ${percentage}%;`;
+              const img = new Image();
+              img.src = fullImageUrl';
+              let imageWidth = 0;
+              img.onload = () => { imageWidth = img.width; };
+              
+              const contentMaxWidth = parseInt(window.getComputedStyle(document.querySelector('.content-with-sidebar')).maxWidth, 10);
+              
+              style = `zoom: ${percentage * contentMaxWidth / imageWidth}%;`;
             }
           }
         }
