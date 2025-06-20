@@ -1,8 +1,8 @@
 # 输入输出流与文件操作
 
-10
+50
 
-![[程设/img/image 1.png{scale=10%}]]
+<img src="https://lihua5487.github.io/程设/img/image%201.png"  style="zoom: 50%;" />
 
 - cin cout 与标准输入/输出设备相连，对应于标准输入/输出流，用于从键盘读取数据/向屏幕输出数据，也可以被重定向为从文件中读取/写入数据
 - cerr （无缓冲） 
