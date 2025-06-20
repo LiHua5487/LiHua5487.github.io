@@ -692,62 +692,29 @@
     const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
     let contentHtml = contentContainer.innerHTML;
     
-    // 修改后的正则表达式 - 支持百分比
+    // 正则表达式匹配
     contentHtml = contentHtml.replace(
       /!\[\[([^\]\n]+?)(?:\|([^\]\n]+?))?\]\]/g,
       (match, path, sizeSpec) => {
-        // 清理路径
-        const cleanedPath = path.trim()
-          .replace(/\s+/g, '%20')
-          .replace(/^[\\/.\s]+/, '');
-        
-        // 构建完整 URL
+        const cleanedPath = path.trim().replace(/\s+/g, '%20');
         const fullImageUrl = `${BASE_URL}${cleanedPath}`;
         const altText = cleanedPath.split('/').pop();
-        
-        // 默认样式（无尺寸指定）
-        let style = 'max-width: 80%; height: auto;';
+      
         let wrapperStyle = '';
-        let imgClass = '';
-        
-        // 如果有尺寸指定
+        let imgStyle = 'width: auto; max-width: 100%; height: auto;';
         if (sizeSpec) {
-          // 处理百分比
           if (sizeSpec.endsWith('%')) {
-            const percentage = parseFloat(sizeSpec);
-            if (!isNaN(percentage)) {
-              // 使用容器包裹并设置宽度
-              wrapperStyle = `width: ${percentage}%;`;
-              imgClass = 'percentage-image';
-              style = 'width: 100%; height: auto;';
-            }
-          }
-          // 处理像素尺寸
-          else if (sizeSpec.includes('x')) {
-            const [width, height] = sizeSpec.split('x').map(Number);
-            if (!isNaN(width) && !isNaN(height)) {
-              style = `max-width: 80%; width: ${width}px; height: ${height}px;`;
-            }
-          }
-          // 纯数字视为像素宽度
-          else if (!isNaN(parseFloat(sizeSpec))) {
-            const width = parseFloat(sizeSpec);
-            style = `max-width: 80%; width: ${width}px; height: auto;`;
+            wrapperStyle = `width: ${sizeSpec}; margin: 0 auto;`;
+            imgStyle = 'width: 100%; height: auto;';
+          } else if (!isNaN(sizeSpec)) {
+            imgStyle = `width: ${parseFloat(sizeSpec)}px; height: auto;`;
           }
         }
-        
-        // 如果有百分比指定，使用容器包裹
-        if (wrapperStyle) {
-          return `
-            <div class="image-percentage-container" style="${wrapperStyle}">
-              <img src="${fullImageUrl}" alt="${altText}" 
-                   class="${imgClass}" style="${style}">
-            </div>
-          `;
-        }
-        
-        // 无百分比指定，直接返回图片
-        return `<img src="${fullImageUrl}" alt="${altText}" style="${style}">`;
+        return wrapperStyle 
+          ? `<div class="image-percentage-container" style="${wrapperStyle}">
+               <img src="${fullImageUrl}" alt="${altText}" style="${imgStyle}" />
+             </div>`
+          : `<img src="${fullImageUrl}" alt="${altText}" style="${imgStyle}" />`;
       }
     );
     
