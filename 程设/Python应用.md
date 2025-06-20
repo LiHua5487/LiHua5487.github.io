@@ -114,6 +114,7 @@ logo = soup.find(class_="logo")  # 注意 class 后面有下划线
 | `['属性名']` | 获取属性值  | `soup.find("a")['href'] → 'http://openjudge.cn/'`      |
 | `.get()`  | 安全获取属性 | `soup.find("div").get('id', 'default') → 'siteHeader'` |
 | `.attrs`  | 获取所有属性 | `soup.find("h1").attrs → {'class': ['logo']}`          |
+| `.text`   | 获取内容   | `soup.find("li").text → '首页'`                          |
 
 这里补充一下 `get` 函数，假设 a 是个字典，那么 `a.get(key, default_val)` 会查找 a 的键 key 对应的值，如果没找到，就返回 `default_val` ，比 `[]` 访问更安全
 
@@ -129,7 +130,7 @@ menu_items = soup.find_all('li', class_="menu")
 
 还可以用 `limit` 参数指定最多找多少个
 
-`select` ：通过 CSS 选择器查找所有符合的元素，更高端，一般用于复杂查找
+`select` ：通过 CSS 选择器查找所有符合的元素，返回列表，更高端，一般用于复杂查找
 
 ```python
 # 查找所有 <h1> 标签
@@ -157,6 +158,13 @@ active_link = soup.select('li.active > a')
 # 查找 id 为 "userMenu" 的元素下的所有 <li>
 menu_items = soup.select('#userMenu > li')
 ```
+
+要查找属于多个 `class` 的tag，可以这样
+```python
+highlight_links = soup.select(".external-link.highlight")
+```
+
+---
 
 那么怎么获取这个html呢？
 
@@ -308,6 +316,7 @@ cheap_fruits = fruit_prices[fruit_prices < 5]
 - `Series.idxmax()`、`Series.argmax()`：最大元素的标签和下标
 - `pd.concat()`：拼接两个Series，不改变前者
 
+---
 
 `DataFrame` ：带行列标签的二维表格，每一行/列都是一个Series
 
@@ -369,6 +378,8 @@ print(df.loc['李四']) # 必须用.loc
 ```
 
 以及各种成员函数，要用直接搜，考试提供参考文档，真的不想罗列了
+
+---
 
 一般来讲，表格是需要从文档读取的，读取后是 DataFrame 类型
 
