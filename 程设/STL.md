@@ -1,6 +1,6 @@
 # 输入输出流与文件操作
 
-50
+new50
 
 <img src="https://lihua5487.github.io/程设/img/image%201.png"  style="zoom: 50%;" />
 
