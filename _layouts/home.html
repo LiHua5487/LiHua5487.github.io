@@ -1,79 +1,265 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="个人主页">
-  <meta name="author" content="xk鼠鼠">
-  <title>主页</title>
-  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
-      background-color: #f7f7f7;
-    }
-    header {
-      background-color: #4caf50; 
-      color: white; 
-      padding: 1rem 2rem;
-      text-align: center;
-    }
-    section.content {
-      max-width: 900px;
-      margin: 2rem auto;
-      background: #fff;
-      padding: 20px 30px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    #notes-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-    .note-box {
-      width: calc(33% - 1rem);
-      background: #e6e6e6;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .note-box:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    .note-box a {
-      text-decoration: none;
-      color: #333;
-    }
-    footer {
-      margin-top: 2rem;
-      text-align: center;
-      font-size: 0.8rem;
-      color: #999;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }}</title>
+    <meta name="description" content="{{ page.description }}">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f7fb;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 侧边栏样式 */
+        #sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar-header {
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .collapse-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 20px 0;
+        }
+        
+        .nav-links li a {
+            display: block;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .nav-links li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding-left: 25px;
+        }
+        
+        /* 主内容区样式 */
+        #content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--light-gray);
+            margin-right: 20px;
+        }
+        
+        .profile-info h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        /* 笔记区域样式 */
+        .notes-section {
+            margin-top: 30px;
+        }
+        
+        .year-section {
+            margin-bottom: 25px;
+        }
+        
+        .year-section h3 {
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .note-card {
+            display: block;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 15px;
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .note-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .note-card h4 {
+            margin: 10px 0 5px;
+        }
+        
+        .note-tag {
+            display: inline-block;
+            background: #ffedd5;
+            color: #ea580c;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            #sidebar {
+                width: 100%;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>{{ site.title }}</h1>
-    <p>{{ site.description }}</p>
-  </header>
-  <section class="content">
-    {{ content }}
-  </section>
-  <footer>
-    <p>© 2023 北京某大学 xk 鼠鼠主页</p>
-  </footer>
+    <!-- 侧边导航栏 -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>导航菜单</h3>
+            <button class="collapse-btn">≡</button>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#about">关于本人</a></li>
+            <li><a href="#homepage">关于主页</a></li>
+            <li><a href="#notes">笔记目录</a></li>
+            <li><a href="https://space.bilibili.com/521407397" target="_blank">B站主页</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main id="content">
+        <!-- 顶部个人信息 -->
+        <header class="profile-header">
+            <img src="https://via.placeholder.com/100" alt="头像" class="avatar">
+            <div class="profile-info">
+                <h1>xk鼠鼠</h1>
+                <p>北京某大学AI方向学生 | Minecraft十年玩家 | 月计人</p>
+            </div>
+        </header>
+
+        <!-- 主页内容 -->
+        <div class="content-section">
+            {{ content }}
+        </div>
+
+        <!-- 笔记目录 -->
+        <section id="notes" class="notes-section">
+            <h2>笔记目录</h2>
+            <div class="notes-container">
+                {% assign sorted_notes = site.data.notes | sort: "year" | reverse %}
+                {% for note in sorted_notes %}
+                <div class="year-section">
+                    <h3>{{ note.year }}</h3>
+                    <div class="notes-grid">
+                        {% for item in note.items %}
+                        <a href="{{ item.url }}" class="note-card">
+                            <h4>{{ item.title }}</h4>
+                            {% if item.note %}
+                            <p class="note-tag">{{ item.note }}</p>
+                            {% endif %}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 侧边栏折叠功能（移动端）
+        document.querySelector('.collapse-btn').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.style.display = navLinks.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        // 移动设备默认折叠导航
+        if (window.innerWidth < 768) {
+            document.querySelector('.nav-links').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
