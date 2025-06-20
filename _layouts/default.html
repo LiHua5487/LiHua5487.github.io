@@ -694,7 +694,7 @@
     
     // 正则表达式匹配
     contentHtml = contentHtml.replace(
-      /!\[\[([^\]\n]+?)(?:\|([^\]\n]+?))?\]\]/g,
+      /!\[\[([^\]\n\|]+?)(?:\|([^\]\n]+?))?\]\]/g,
       (match, path, sizeSpec) => {
         // 清理路径
         const cleanedPath = path.trim()
@@ -712,7 +712,7 @@
         
         // 如果有尺寸指定
         if (sizeSpec) {
-          // 处理百分比
+          // 处理百分比 (如 |50%)
           if (sizeSpec.endsWith('%')) {
             const percentage = parseFloat(sizeSpec);
             if (!isNaN(percentage)) {
@@ -722,14 +722,14 @@
               style = 'width: 100%; height: auto;';
             }
           }
-          // 处理像素尺寸
+          // 处理像素尺寸 (如 |100x200)
           else if (sizeSpec.includes('x')) {
             const [width, height] = sizeSpec.split('x').map(Number);
             if (!isNaN(width) && !isNaN(height)) {
               style = `max-width: 80%; width: ${width}px; height: ${height}px;`;
             }
           }
-          // 纯数字视为像素宽度
+          // 纯数字视为像素宽度 (如 |300)
           else if (!isNaN(parseFloat(sizeSpec))) {
             const width = parseFloat(sizeSpec);
             style = `max-width: 80%; width: ${width}px; height: auto;`;
