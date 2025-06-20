@@ -708,7 +708,7 @@
           if (scaleValue) {
             const percentage = parseFloat(scaleValue[1]);
             if (!isNaN(percentage)) {
-              style = `zoom: ${percentage}%;`;
+              style = `zoom: ${0.5 * percentage}%;`;
             }
           }
         }
