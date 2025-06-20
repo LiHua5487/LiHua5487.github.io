@@ -15,7 +15,7 @@ python部分的笔记同样不包含python特别基础的东西，如常见变�
 部分笔记参考了[某位同学的笔记](https://lh314-pku.github.io/notes/Programming_Internship/index)（放这里只是怕以后找不到他的主页了）<br>
 但是，我的笔记加入了很多口语性的描述与简单易懂的例子（而不是按照传奇程设ppt），也是本人初见理解的过程<br>
 
-附[大作业链接](https://github.com/lh314-pku/Q_le_tt_DeskPet/tree/main)
+附[大作业链接](https://github.com/lh314-pku/Q_le_tt_DeskPet/tree/main)，我负责了提供创意与AI Chat部分，不过队友干的也很好，以及我做的抽象小视频与ppt
 
 # 目录
 - [cpp面向对象编程](https://lihua5487.github.io/程设/面向对象编程)
