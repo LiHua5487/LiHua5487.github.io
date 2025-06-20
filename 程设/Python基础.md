@@ -14,9 +14,9 @@ c = f"{x:.2f}" # 保留两位小数，位数不能是负数
 计算最大公因数
 ```python
 def gcd(m, n):
-    while n != 0:
-        m, n = n, m % n
-    return m
+    while n != 0:
+        m, n = n, m % n
+    return m
 ```
 
 ---
@@ -160,12 +160,12 @@ a = a + [4] # a变成一个新列表，b还是[1,2,3]
 
 ```python
 class  A:
-    def __init__(self,x):
-        self.x = x
-    def __hash__(self):
-        return 0 # 所有实例哈希值都为0，会导致哈希冲突
-    def __eq__(self,other): # 哈希冲突时使用eq判断是不是同一个key
-        return self.x == other.x
+    def __init__(self,x):
+        self.x = x
+    def __hash__(self):
+        return 0 # 所有实例哈希值都为0，会导致哈希冲突
+    def __eq__(self,other): # 哈希冲突时使用eq判断是不是同一个key
+        return self.x == other.x
 
 a = A(3)
 b = A(3)
@@ -195,21 +195,21 @@ print(d[b])
 
 ```python
 class Employee:
-    company = "TechCorp"  # 静态成员变量/类属性，所有实例共享
-    def __init__(self, name):
-        self.name = name
+    company = "TechCorp"  # 静态成员变量/类属性，所有实例共享
+    def __init__(self, name):
+        self.name = name
 
-    @classmethod # 类方法
-    def change_company(cls, new_company):
-        cls.company = new_company  # 修改类属性
-        return f"Company changed to {new_company}"
+    @classmethod # 类方法
+    def change_company(cls, new_company):
+        cls.company = new_company  # 修改类属性
+        return f"Company changed to {new_company}"
 
-    @staticmethod # 静态方法，独立于类
-    def calculate_bonus(salary):
-        return salary * 0.1
+    @staticmethod # 静态方法，独立于类
+    def calculate_bonus(salary):
+        return salary * 0.1
 
-    def get_info(self):
-        return f"{self.name} works at {self.company}"
+    def get_info(self):
+        return f"{self.name} works at {self.company}"
 
 print(Employee.company) # 获取类属性
 emp = Employee("Alice") # 声明
@@ -237,26 +237,26 @@ emp.bonus = bonus # 可随时添加成员变量
 
 ```python
 class Person:
-    def __init__(self, name):
-        self._name = name
+    def __init__(self, name):
+        self._name = name
 
-    # 定义 getter 方法，将函数封装为属性
-    @property
-    def name(self):
-        return self._name
+    # 定义 getter 方法，将函数封装为属性
+    @property
+    def name(self):
+        return self._name
 
-    # 定义 setter 方法，允许修改属性
-    @name.setter
-    def name(self, value):
-        if not isinstance(value, str):  # 检查赋值是否合法
-            raise ValueError("name must be string.")
-        self._name = value
+    # 定义 setter 方法，允许修改属性
+    @name.setter
+    def name(self, value):
+        if not isinstance(value, str):  # 检查赋值是否合法
+            raise ValueError("name must be string.")
+    self._name = value
 
-    # 定义 deleter 方法，删除属性
-    @name.deleter
-    def name(self):
-        print("name attr deleted.")
-        del self._name
+    # 定义 deleter 方法，删除属性
+    @name.deleter
+    def name(self):
+        print("name attr deleted.")
+        del self._name
 ```
 
 泛型：由于Python函数不会显式地声明类型，所以任何函数都是相当于模板
