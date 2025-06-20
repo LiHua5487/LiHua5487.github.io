@@ -29,13 +29,17 @@
         
         /* 侧边栏样式 */
         .sidebar {
+            position: fixed; 
+            top: 0;
+            left: 0;
             width: 260px;
+            height: 100vh; /* 全屏高度 */
             background: rgba(255, 255, 255, 0.95);
             padding: 30px 20px;
             border-right: 1px solid rgba(0, 0, 0, 0.05);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
             z-index: 100;
-            overflow: hidden;
+            overflow-y: auto; /* 允许侧边栏内部滚动 */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
         }
         
@@ -172,15 +176,14 @@
             padding: 40px;
             background-color: #f9fafb;
             position: relative;
+            margin-left: 260px;
+            width: calc(100% - 260px);
         }
         
-        /* 页面内容区域 */
-        .page-section {
-            padding: 30px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
-            margin-bottom: 30px;
+        /* 当侧边栏折叠时调整主体内容 */
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 70px;
+            width: calc(100% - 70px);
         }
         
         /* 头部区域 */
@@ -229,6 +232,15 @@
             font-size: 0.9rem;
             margin-top: 15px;
             font-weight: 500;
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            border-top: 1px solid #ecf0f1;
+            margin-top: 50px;
         }
         
         /* 笔记区域 */
@@ -429,7 +441,7 @@
                 </div>
                 <div class="intro">
                     <h1>LiHua同学 | 能工智人</h1>
-                    <p>梦想成为一名"人工智能"，天天抱着《Python入门到放弃》废寝忘食，曾和GPT、DeepSeek等大咖们深入交流，对此，DeepSeek默默调低了自己的算力，而GPT则表示：“友好地保持模糊与沉默是对人类的尊重！”</p>
+                    <p>梦想成为一名"人工智能"，曾和GPT、DeepSeek等大咖们深入交流，对此，DeepSeek默默调低了自己的算力，而GPT则表示：“友好地保持模糊与沉默是对人类的尊重！”</p>
                 </div>
             </div>
             
@@ -461,7 +473,7 @@
             </section>
             
             <!-- 页脚 -->
-            <div class="page-section" style="text-align: center; padding: 20px;">
+            <div class="footer" style="text-align: center; padding: 20px;">
                 <p>© 2024 LiHua同学的个人主页 | 感谢访问</p>
                 <p style="margin-top: 10px; color: #718096;">
                     <i class="fab fa-github"></i> lihua5487 · 
