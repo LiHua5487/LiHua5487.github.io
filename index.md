@@ -1,10 +1,3 @@
----
-layout: custom_home
-title: 这是标题
-description: 这是描述
----
-
-
 # 关于本人
 
 本人是北京某大学xk鼠鼠，选了ai方向，擅长与ai深入交流而后解决各种问题
