@@ -470,7 +470,63 @@
         hljs.highlightElement(el);
       });
       
-      // 添加复制按钮（内联SVG）
+      // 定义复制图标（使用SVG）
+      const copyIcon = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      `;
+      
+      const successIcon = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      
+      const errorIcon = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      
+      // 事件委托处理复制按钮点击
+      document.body.addEventListener('click', async (e) => {
+        if (e.target.closest('.copy-button')) {
+          const button = e.target.closest('.copy-button');
+          const pre = button.closest('pre');
+          const code = pre.querySelector('code').innerText;
+          
+          try {
+            if (navigator.clipboard) {
+              await navigator.clipboard.writeText(code);
+            } 
+            else {
+              const textarea = document.createElement('textarea');
+              textarea.value = code;
+              textarea.style.position = 'fixed';
+              document.body.appendChild(textarea);
+              textarea.select();
+              document.execCommand('copy');
+              document.body.removeChild(textarea);
+            }
+            
+            // 显示成功状态
+            button.innerHTML = successIcon;
+            setTimeout(() => {
+              button.innerHTML = copyIcon;
+            }, 2000);
+          } catch (err) {
+            console.error('复制失败:', err);
+            button.innerHTML = errorIcon;
+            setTimeout(() => {
+              button.innerHTML = copyIcon;
+            }, 2000);
+          }
+        }
+      });
+        
+      // 添加复制按钮到所有代码块
       document.querySelectorAll('pre').forEach((pre) => {
         if (pre.querySelector('.copy-button')) return;
         
@@ -478,37 +534,11 @@
         button.className = 'copy-button';
         button.setAttribute('aria-label', '复制代码');
         button.setAttribute('title', '复制代码');
+        button.innerHTML = copyIcon;
         
-        // 内联SVG图标
-        button.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-        `;
-        
-        button.addEventListener('click', () => {
-          const code = pre.querySelector('code').innerText;
-          navigator.clipboard.writeText(code).then(() => {
-            // 复制成功反馈（可选动画）
-            button.innerHTML = `
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            `;
-            setTimeout(() => {
-              button.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-              `;
-            }, 2000);
-          });
-        });
         pre.appendChild(button);
       });
-
+      
       // 生成大纲导航
       const outlineList = document.getElementById('outline-list');
       const headings = document.querySelectorAll('.content-with-sidebar h1, .content-with-sidebar h2, .content-with-sidebar h3, .content-with-sidebar h4, .content-with-sidebar h5, .content-with-sidebar h6');
