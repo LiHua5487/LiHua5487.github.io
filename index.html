@@ -174,19 +174,25 @@
         .main-content {
             flex: 1;
             padding: 40px;
+            background-color: #f9fafb;
             position: relative;
             margin-left: 260px;
             width: calc(100% - 260px);
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
-            margin-bottom: 30px;
         }
         
         /* 当侧边栏折叠时调整主体内容 */
         .sidebar.collapsed ~ .main-content {
             margin-left: 70px;
             width: calc(100% - 70px);
+        }
+
+        /* 页面内容区域 */
+        .page-section {
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            margin-bottom: 30px;
         }
         
         /* 头部区域 */
