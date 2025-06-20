@@ -35,7 +35,7 @@
             border-right: 1px solid rgba(0, 0, 0, 0.05);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
             z-index: 100;
-            position: relative;
+            position: fixed;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
         }
@@ -433,87 +433,17 @@
             <!-- 笔记目录区域 -->
             <section id="notes" class="page-section">
                 <h2 class="section-title">笔记目录</h2>
-                
-                <div class="year-section">
-                    <h3 class="year-title">大一下</h3>
-                    <div class="notes-grid">
-                        <a href="https://lihua5487.github.io/CV导论/index" class="note-card" target="_blank">
-                            <div class="note-header">
-                                <div class="note-icon">
-                                    <i class="fas fa-eye"></i>
-                                </div>
-                                <h3>计算机视觉导论</h3>
-                            </div>
-                            <div class="note-content">
-                                <p>计算机视觉基础知识和算法介绍，包括图像处理、特征提取和对象识别等内容。</p>
-                            </div>
-                        </a>
-                        
-                        <a href="https://lihua5487.github.io/程设/index" class="note-card" target="_blank">
-                            <div class="note-header">
-                                <div class="note-icon">
-                                    <i class="fas fa-code"></i>
-                                </div>
-                                <h3>程序设计实习</h3>
-                            </div>
-                            <div class="note-content">
-                                <p>编程实践课程，涵盖数据结构、算法实现和项目开发等内容。</p>
-                            </div>
-                        </a>
-                        
-                        <a href="https://lihua5487.github.io/AI引论/index" class="note-card" target="_blank">
-                            <div class="note-header">
-                                <div class="note-icon">
-                                    <i class="fas fa-robot"></i>
-                                </div>
-                                <h3>人工智能引论</h3>
-                            </div>
-                            <div class="note-content">
-                                <p>人工智能基础概念、发展历史和主要技术介绍。</p>
-                                <span class="note-tag">暂未移植</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="year-section">
-                    <h3 class="year-title">大二上</h3>
-                    <div class="notes-grid">
-                        <a href="#" class="note-card">
-                            <div class="note-header">
-                                <div class="note-icon">
-                                    <i class="fas fa-brain"></i>
-                                </div>
-                                <h3>机器学习基础</h3>
-                            </div>
-                            <div class="note-content">
-                                <p>监督学习、非监督学习和强化学习的基本原理和应用。</p>
-                                <span class="note-tag">整理中</span>
-                            </div>
-                        </a>
-                        
-                        <a href="#" class="note-card">
-                            <div class="note-header">
-                                <div class="note-icon">
-                                    <i class="fas fa-network-wired"></i>
-                                </div>
-                                <h3>神经网络导论</h3>
-                            </div>
-                            <div class="note-content">
-                                <p>深度学习基础，包括前馈神经网络、CNN、RNN等模型。</p>
-                                <span class="note-tag">整理中</span>
-                            </div>
-                        </a>
-                    </div>
+                <div id="notes-container">
+                    <!-- 笔记内容将由JS动态生成 -->
                 </div>
             </section>
             
             <!-- 页脚 -->
             <div class="page-section" style="text-align: center; padding: 20px;">
-                <p>© 2024 xk鼠鼠的个人主页 | 感谢访问</p>
+                <p>© 2024 LiHua同学的个人主页 | 感谢访问</p>
                 <p style="margin-top: 10px; color: #718096;">
                     <i class="fab fa-github"></i> lihua5487 · 
-                    <i class="fab fa-bilibili"></i> 521407397
+                    <i class="fab fa-bilibili"></i> 大聪明笨比
                 </p>
             </div>
         </div>
@@ -536,10 +466,25 @@
             // 为每个导航链接添加点击事件
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
+                    // 对于外部链接直接跳转
+                    if (this.getAttribute('target') === '_blank') return;
+                    
+                    e.preventDefault();
+                    
                     // 移除所有链接的active类
                     navLinks.forEach(link => link.classList.remove('active'));
                     // 添加当前链接的active类
                     this.classList.add('active');
+                    
+                    // 获取目标区域的ID
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    // 平滑滚动到目标位置
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                     
                     // 在移动设备上，点击导航链接后自动折叠侧边栏
                     if (window.innerWidth <= 992) {
@@ -548,6 +493,99 @@
                 });
             });
         });
+    </script>
+
+    <!-- 笔记数据 -->
+    <script>
+        // 笔记数据结构
+        const notesData = [
+            {
+                year: "大一下",
+                items: [
+                    {
+                        title: "计算机视觉导论",
+                        url: "https://lihua5487.github.io/CV导论/index",
+                        icon: "fas fa-eye",
+                        desc: "计算机视觉基础知识和算法介绍",
+                        tag: ""
+                    },
+                    {
+                        title: "程序设计实习",
+                        url: "https://lihua5487.github.io/程设/index",
+                        icon: "fas fa-code",
+                        desc: "编程实践课程",
+                        tag: ""
+                    },
+                    {
+                        title: "人工智能引论",
+                        url: "https://lihua5487.github.io/AI引论/index",
+                        icon: "fas fa-robot",
+                        desc: "人工智能基础概念介绍",
+                        tag: "暂未移植"
+                    }
+                ]
+            },
+            {
+                year: "大二上",
+                items: [
+                    {
+                        title: "---",
+                        url: "#",
+                        icon: "fas fa-brain",
+                        desc: "---",
+                        tag: "---"
+                    },
+                    {
+                        title: "---",
+                        url: "#",
+                        icon: "fas fa-network-wired",
+                        desc: "---",
+                        tag: "---"
+                    }
+                ]
+            }
+        ];
+        
+        // 渲染笔记函数
+        function renderNotes() {
+            const notesContainer = document.getElementById('notes-container');
+            let html = '';
+            
+            notesData.forEach(yearData => {
+                html += `
+                <div class="year-section">
+                    <h3 class="year-title">${yearData.year}</h3>
+                    <div class="notes-grid">
+                `;
+                
+                yearData.items.forEach(note => {
+                    html += `
+                    <a href="${note.url}" class="note-card" ${note.url === '#' ? '' : 'target="_blank"'}">
+                        <div class="note-header">
+                            <div class="note-icon">
+                                <i class="${note.icon}"></i>
+                            </div>
+                            <h3>${note.title}</h3>
+                        </div>
+                        <div class="note-content">
+                            <p>${note.desc}</p>
+                            ${note.tag ? `<span class="note-tag">${note.tag}</span>` : ''}
+                        </div>
+                    </a>
+                    `;
+                });
+                
+                html += `
+                    </div>
+                </div>
+                `;
+            });
+            
+            notesContainer.innerHTML = html;
+        }
+        
+        // 页面加载时渲染笔记
+        document.addEventListener('DOMContentLoaded', renderNotes);
     </script>
 </body>
 </html>
