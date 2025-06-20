@@ -35,7 +35,7 @@
             border-right: 1px solid rgba(0, 0, 0, 0.05);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
             z-index: 100;
-            position: fixed;
+            position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
         }
@@ -407,7 +407,7 @@
                 </div>
                 <div class="intro">
                     <h1>LiHua同学 | 能工智人</h1>
-                    <p>梦想成为一名"人工智能"，天天抱着《Python入门到放弃》废寝忘食，曾和GPT、DeepSeek等大咖们深入交流，夸口自己未来一定能"进化"成一个顶级AI。他甚至信誓旦旦地说了一句："总有一天，阿尔法狗也得喊我一声师兄！" 对此，DeepSeek默默调低了自己的算力，而GPT则表示：“友好地保持模糊与沉默是对人类的尊重！”</p>
+                    <p>梦想成为一名"人工智能"，天天抱着《Python入门到放弃》废寝忘食，曾和GPT、DeepSeek等大咖们深入交流，对此，DeepSeek默默调低了自己的算力，而GPT则表示：“友好地保持模糊与沉默是对人类的尊重！”</p>
                 </div>
             </div>
             
@@ -466,10 +466,25 @@
             // 为每个导航链接添加点击事件
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
+                    // 对于外部链接直接跳转
+                    if (this.getAttribute('target') === '_blank') return;
+                    
+                    e.preventDefault();
+                    
                     // 移除所有链接的active类
                     navLinks.forEach(link => link.classList.remove('active'));
                     // 添加当前链接的active类
                     this.classList.add('active');
+                    
+                    // 获取目标区域的ID
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    // 平滑滚动到目标位置
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                     
                     // 在移动设备上，点击导航链接后自动折叠侧边栏
                     if (window.innerWidth <= 992) {
