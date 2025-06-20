@@ -705,10 +705,10 @@
     const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
     let contentHtml = contentContainer.innerHTML;
     
-    // 正则表达式匹配
+    // 简化正则表达式，专注于提取路径和缩放比例
     contentHtml = contentHtml.replace(
-      /!\[\[([^\]\n\|]+?)(?:\|([^\]\n]+?))?\]\]/g,
-      (match, path, sizeSpec) => {
+      /!\[\[([^\]]+?)(?:\|([^\]]+?))?\]\]/g,
+      (match, path, scaleSpec) => {
         // 清理路径
         const cleanedPath = path.trim()
           .replace(/\s+/g, '%20')
@@ -718,49 +718,25 @@
         const fullImageUrl = `${BASE_URL}${cleanedPath}`;
         const altText = cleanedPath.split('/').pop();
         
-        // 默认样式（无尺寸指定）
-        let style = 'max-width: 80%; height: auto;';
-        let wrapperStyle = '';
-        let imgClass = '';
+        // 默认缩放比例
+        let scale = 1;
         
-        // 如果有尺寸指定
-        if (sizeSpec) {
-          // 处理百分比 (如 |50%)
-          if (sizeSpec.endsWith('%')) {
-            const percentage = parseFloat(sizeSpec);
-            if (!isNaN(percentage)) {
-              // 使用容器包裹并设置宽度
-              wrapperStyle = `width: ${percentage}%;`;
-              imgClass = 'percentage-image';
-              style = 'width: 100%; height: auto;';
-            }
-          }
-          // 处理像素尺寸 (如 |100x200)
-          else if (sizeSpec.includes('x')) {
-            const [width, height] = sizeSpec.split('x').map(Number);
-            if (!isNaN(width) && !isNaN(height)) {
-              style = `max-width: 80%; width: ${width}px; height: ${height}px;`;
-            }
-          }
-          // 纯数字视为像素宽度 (如 |300)
-          else if (!isNaN(parseFloat(sizeSpec))) {
-            const width = parseFloat(sizeSpec);
-            style = `max-width: 80%; width: ${width}px; height: auto;`;
+        // 如果有缩放指定
+        if (scaleSpec && scaleSpec.endsWith('%')) {
+          const percentage = parseFloat(scaleSpec);
+          if (!isNaN(percentage)) {
+            scale = percentage / 100;
           }
         }
         
-        // 如果有百分比指定，使用容器包裹
-        if (wrapperStyle) {
-          return `
-            <div class="image-percentage-container" style="${wrapperStyle}">
-              <img src="${fullImageUrl}" alt="${altText}" 
-                   class="${imgClass}" style="${style}">
-            </div>
-          `;
-        }
-        
-        // 无百分比指定，直接返回图片
-        return `<img src="${fullImageUrl}" alt="${altText}" style="${style}">`;
+        // 使用 transform: scale() 实现缩放
+        return `
+          <div class="image-scaling-container">
+            <img src="${fullImageUrl}" alt="${altText}" 
+                 class="scaled-image" 
+                 style="transform: scale(${scale});">
+          </div>
+        `;
       }
     );
     
@@ -768,7 +744,7 @@
     contentContainer.innerHTML = contentHtml;
     
     // 添加图片加载错误处理
-    document.querySelectorAll('img').forEach(img => {
+    document.querySelectorAll('.scaled-image').forEach(img => {
       img.addEventListener('error', function() {
         console.error('图片加载失败:', this.src);
         this.alt = `[图片加载失败: ${this.src.replace(BASE_URL, '')}]`;
@@ -776,6 +752,15 @@
         this.style.backgroundColor = '#fff8f8';
         this.style.padding = '10px';
         this.style.textAlign = 'center';
+        this.style.transform = 'none'; // 移除缩放效果
+      });
+      
+      // 图片加载完成后调整容器尺寸
+      img.addEventListener('load', function() {
+        const container = this.parentElement;
+        // 设置容器尺寸为缩放后的图片尺寸
+        container.style.width = `${this.naturalWidth * parseFloat(this.style.transform.replace('scale(', '').replace(')', ''))}px`;
+        container.style.height = `${this.naturalHeight * parseFloat(this.style.transform.replace('scale(', '').replace(')', ''))}px`;
       });
     });
   });
