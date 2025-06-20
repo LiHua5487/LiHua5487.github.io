@@ -167,34 +167,14 @@
 
     /* 图片样式 */
     img {
+      display: block;
+      margin: 15px auto;
+      box-sizing: border-box;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 4px;
       max-width: 100%;
       height: auto;
-      display: block;
-      margin: 15px auto;
-      box-sizing: border-box;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      border-radius: 4px;
-    }
-
-    /* 缩放图片样式 */
-    .scaled-image {
-      display: block;
-      margin: 15px auto;
-      box-sizing: border-box;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      border-radius: 4px;
-      max-width: 100%;
-      transform-origin: center center; /* 确保从中心缩放 */
-    }
-    
-    /* 防止缩放后的图片溢出容器 */
-    .image-scaling-container {
-      overflow: hidden;
-      margin: 15px auto;
-      display: flex;
-      justify-content: center;
     }
     
     /* 大纲导航 */
@@ -705,7 +685,7 @@
     const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
     let contentHtml = contentContainer.innerHTML;
     
-    // 简化正则表达式，专注于提取路径和缩放比例
+    // 正则表达式匹配图片
     contentHtml = contentHtml.replace(
       /!\[\[([^\]]+?)(?:\|([^\]]+?))?\]\]/g,
       (match, path, scaleSpec) => {
@@ -718,25 +698,19 @@
         const fullImageUrl = `${BASE_URL}${cleanedPath}`;
         const altText = cleanedPath.split('/').pop();
         
-        // 默认缩放比例
-        let scale = 1;
+        // 默认样式
+        let style = '';
         
-        // 如果有缩放指定
+        // 处理缩放比例
         if (scaleSpec && scaleSpec.endsWith('%')) {
           const percentage = parseFloat(scaleSpec);
           if (!isNaN(percentage)) {
-            scale = percentage / 100;
+            style = `zoom: ${percentage}%;`;
           }
         }
         
-        // 使用 transform: scale() 实现缩放
-        return `
-          <div class="image-scaling-container">
-            <img src="${fullImageUrl}" alt="${altText}" 
-                 class="scaled-image" 
-                 style="transform: scale(${scale});">
-          </div>
-        `;
+        // 直接返回带有zoom样式的图片标签
+        return `<img src="${fullImageUrl}" alt="${altText}" style="${style}">`;
       }
     );
     
@@ -744,7 +718,7 @@
     contentContainer.innerHTML = contentHtml;
     
     // 添加图片加载错误处理
-    document.querySelectorAll('.scaled-image').forEach(img => {
+    document.querySelectorAll('img').forEach(img => {
       img.addEventListener('error', function() {
         console.error('图片加载失败:', this.src);
         this.alt = `[图片加载失败: ${this.src.replace(BASE_URL, '')}]`;
@@ -752,15 +726,6 @@
         this.style.backgroundColor = '#fff8f8';
         this.style.padding = '10px';
         this.style.textAlign = 'center';
-        this.style.transform = 'none'; // 移除缩放效果
-      });
-      
-      // 图片加载完成后调整容器尺寸
-      img.addEventListener('load', function() {
-        const container = this.parentElement;
-        // 设置容器尺寸为缩放后的图片尺寸
-        container.style.width = `${this.naturalWidth * parseFloat(this.style.transform.replace('scale(', '').replace(')', ''))}px`;
-        container.style.height = `${this.naturalHeight * parseFloat(this.style.transform.replace('scale(', '').replace(')', ''))}px`;
       });
     });
   });
