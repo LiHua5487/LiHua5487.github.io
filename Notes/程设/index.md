@@ -18,8 +18,8 @@ python部分的笔记同样不包含python特别基础的东西，如常见变�
 附[大作业链接](https://github.com/lh314-pku/Q_le_tt_DeskPet/tree/main)，我负责了提供创意与AI Chat部分，不过队友干的也很好，以及我做的抽象小视频与ppt
 
 # 目录
-- [cpp面向对象编程](https://lihua5487.github.io/程设/面向对象编程)
-- [STL](https://lihua5487.github.io/程设/STL)
-- [C++11与进阶内容](https://lihua5487.github.io/程设/C++11与进阶内容)
-- [Python基础](https://lihua5487.github.io/程设/Python基础)
-- [Python应用](https://lihua5487.github.io/程设/Python应用)
+- [cpp面向对象编程](https://lihua5487.github.io/Notes/程设/面向对象编程)
+- [STL](https://lihua5487.github.io/Notes/程设/STL)
+- [C++11与进阶内容](https://lihua5487.github.io/Notes/程设/C++11与进阶内容)
+- [Python基础](https://lihua5487.github.io/Notes/程设/Python基础)
+- [Python应用](https://lihua5487.github.io/Notes/程设/Python应用)
