@@ -462,10 +462,71 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/xml.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/sql.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cuda.min.js"></script>
   
   <!-- 初始化 highlight.js -->
   <script>
     document.addEventListener('DOMContentLoaded', (event) => {
+      // 配置highlight.js
+      hljs.configure({
+        languages: ['python', 'cuda', 'cpp', 'javascript', 'java', 'xml', 'sql', 'bash']
+      });
+      
+      // 添加Python和CUDA自定义关键字
+      hljs.registerLanguage('python', function(hljs) {
+        const PYTHON_KEYWORDS = {
+          keyword: 'and as assert async await break class continue def del elif else ' +
+            'except finally for from global if import in is lambda nonlocal not or pass ' +
+            'raise return try while with yield False None True',
+          built_in: '__import__ abs all any ascii bin bool bytearray bytes callable ' +
+            'chr classmethod compile complex delattr dict dir divmod enumerate ' +
+            'eval exec filter float format frozenset getattr globals hasattr hash ' +
+            'help hex id input int isinstance issubclass iter len list locals map ' +
+            'max memoryview min next object oct open ord pow print property range ' +
+            'repr reversed round set setattr slice sorted staticmethod str sum super ' +
+            'tuple type vars zip',
+          literal: 'False None True'
+        };
+        
+        const pythonLanguage = hljs.getLanguage('python');
+        pythonLanguage.keywords = PYTHON_KEYWORDS;
+        return pythonLanguage;
+      });
+      
+      hljs.registerLanguage('cuda', function(hljs) {
+        const CUDA_KEYWORDS = {
+          keyword: '__global__ __device__ __host__ __constant__ __shared__ __restrict__ ' +
+            'gridDim blockIdx blockDim threadIdx warpSize __syncthreads __ballot_sync ' +
+            '__shfl_sync __shfl_up_sync __shfl_down_sync __shfl_xor_sync ' +
+            '__ldg __ldcg __ldca __ldcs __ldlu __ldcv __ldg __ldcg __ldca ' +
+            '__any_sync __all_sync __uni_sync __activemask __match_any_sync ' +
+            '__match_all_sync __reduce_add_sync __reduce_min_sync __reduce_max_sync ' +
+            '__popc __clz __ffs __brev __byte_perm __funnelshift_l __funnelshift_r ' +
+            '__hfma __dadd_rn __dsub_rn __dmul_rn __ddiv_rn __fadd_rn __fsub_rn ' +
+            '__fmul_rn __fdiv_rn __double2float_rn __float2double_rn __int2double_rn ' +
+            '__uint2double_rn __double2int_rn __double2uint_rn __float2int_rn ' +
+            '__float2uint_rn __int2float_rn __uint2float_rn __double2hiint ' +
+            '__double2loint __hiloint2double __float_as_int __int_as_float ' +
+            '__double_as_longlong __longlong_as_double __float2half __half2float ' +
+            '__float2half_rn __half2float __half2int_rn __int2half_rn ' +
+            '__uint2half_rn __half2uint_rn __half_add __half_sub __half_mul ' +
+            '__half_div __half_neg __half_eq __half_ne __half_lt __half_le ' +
+            '__half_gt __half_ge __hadd __hsub __hmul __hdiv __hneg __heq ' +
+            '__hne __hlt __hle __hgt __hge __hadd_sat __hsub_sat __hmul_sat ' +
+            '__hdiv_sat __hfma_sat __habs __hmin __hmax __atomicAdd __atomicExch ' +
+            '__atomicMin __atomicMax __atomicInc __atomicDec __atomicCAS ' +
+            '__atomicAnd __atomicOr __atomicXor',
+          built_in: 'dim3 make_uint2 make_uint3 make_uint4 make_int2 make_int3 ' +
+            'make_int4 make_float2 make_float3 make_float4',
+          type: 'char uchar short ushort int uint long ulong longlong ulonglong ' +
+            'float double dim3 uint2 uint3 uint4 int2 int3 int4 float2 float3 float4'
+        };
+        
+        const cudaLanguage = hljs.getLanguage('cpp');
+        cudaLanguage.keywords = CUDA_KEYWORDS;
+        return cudaLanguage;
+      });
+
       // 高亮所有代码块
       document.querySelectorAll('pre code').forEach((el) => {
         hljs.highlightElement(el);
