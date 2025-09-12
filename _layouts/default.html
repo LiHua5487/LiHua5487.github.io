@@ -345,38 +345,40 @@
     }
   </style>
   
-  <!-- 代码高亮 -->
+  <!-- highlight.js 主题：深色主题但保留内联代码背景 -->
   <link rel="stylesheet" 
-      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" 
-        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark-dimmed.min.css">
   
-  <!-- 覆盖代码高亮字体 -->
-  <!-- <style>
-    pre[class*="language-"] {
+  <!-- 覆盖 highlight.js 字体 -->
+  <style>
+    /* 统一代码字体 */
+    code, pre code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace !important;
+      font-size: 16px !important;
+    }
+    
+    /* 恢复内联代码背景 */
+    :not(pre) > code {
+      background-color: rgba(27,31,35,0.05) !important;
+      color: #d63384 !important;
+    }
+    
+    /* 代码块样式 */
+    pre {
       border-radius: 6px;
-      padding: 16px !important;
+      padding: 16px !important; /* 保持原始内边距 */
       margin: 1.5em 0;
       overflow: auto;
       box-shadow: 0 4px 6px rgba(0,0,0,0.04);
-      border-left: 4px solid #4285f4;
-      position: relative;
-      background: #2d2d2d !important;
+      border-left: 4px solid #4285f4; /* 左侧高亮条 */
+      position: relative; /* 为复制按钮定位 */
     }
     
-    code[class*="language-"] {
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace !important;
-      font-size: 16px !important;
-      background: transparent !important;
-    }
-
-    div.code-toolbar > .toolbar {
-      opacity: 1 !important;
+    /* 优化复制按钮位置 */
+    .copy-button {
+      position: absolute;
       top: 8px;
       right: 8px;
-    }
-    
-    div.code-toolbar > .toolbar > .toolbar-item > button {
       padding: 4px 8px;
       background: #555;
       color: white;
@@ -386,12 +388,27 @@
       opacity: 0.7;
       transition: opacity 0.3s;
       font-size: 12px;
+      z-index: 10;
     }
     
-    div.code-toolbar > .toolbar > .toolbar-item > button:hover {
+    pre:hover .copy-button {
       opacity: 1;
     }
-  </style> -->
+    
+    /* 确保代码块不覆盖高亮条 */
+    pre code {
+      display: block;
+      padding: 0 !important;
+      overflow-x: auto;
+      background: none !important;
+    }
+    
+    /* 高亮语言提示 */
+    .hljs {
+      padding: 0;
+      background: transparent !important;
+    }
+  </style>
 </head>
 <body>
   <!-- 导航区域 -->
@@ -434,23 +451,156 @@
     {{ content }}
   </div>
   
-  <!-- 加载代码高亮文件 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cuda.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  <!-- 加载 highlight.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
   
-  <!-- 初始化代码高亮 -->
+  <!-- 支持所有常见语言 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cuda.min.js"></script>
+  
+  <!-- 初始化 highlight.js -->
   <script>
     document.addEventListener('DOMContentLoaded', (event) => {
+      // 配置highlight.js
+      hljs.configure({
+        languages: ['python', 'cuda', 'cpp', 'javascript', 'java', 'xml', 'sql', 'bash']
+      });
+      
+      // 添加Python和CUDA自定义关键字
+      hljs.registerLanguage('python', function(hljs) {
+        const PYTHON_KEYWORDS = {
+          keyword: 'and as assert async await break class continue def del elif else ' +
+            'except finally for from global if import in is lambda nonlocal not or pass ' +
+            'raise return try while with yield False None True',
+          built_in: '__import__ abs all any ascii bin bool bytearray bytes callable ' +
+            'chr classmethod compile complex delattr dict dir divmod enumerate ' +
+            'eval exec filter float format frozenset getattr globals hasattr hash ' +
+            'help hex id input int isinstance issubclass iter len list locals map ' +
+            'max memoryview min next object oct open ord pow print property range ' +
+            'repr reversed round set setattr slice sorted staticmethod str sum super ' +
+            'tuple type vars zip',
+          literal: 'False None True'
+        };
+        
+        const pythonLanguage = hljs.getLanguage('python');
+        pythonLanguage.keywords = PYTHON_KEYWORDS;
+        return pythonLanguage;
+      });
+      
+      hljs.registerLanguage('cuda', function(hljs) {
+        const CUDA_KEYWORDS = {
+          keyword: '__global__ __device__ __host__ __constant__ __shared__ __restrict__ ' +
+            'gridDim blockIdx blockDim threadIdx warpSize __syncthreads __ballot_sync ' +
+            '__shfl_sync __shfl_up_sync __shfl_down_sync __shfl_xor_sync ' +
+            '__ldg __ldcg __ldca __ldcs __ldlu __ldcv __ldg __ldcg __ldca ' +
+            '__any_sync __all_sync __uni_sync __activemask __match_any_sync ' +
+            '__match_all_sync __reduce_add_sync __reduce_min_sync __reduce_max_sync ' +
+            '__popc __clz __ffs __brev __byte_perm __funnelshift_l __funnelshift_r ' +
+            '__hfma __dadd_rn __dsub_rn __dmul_rn __ddiv_rn __fadd_rn __fsub_rn ' +
+            '__fmul_rn __fdiv_rn __double2float_rn __float2double_rn __int2double_rn ' +
+            '__uint2double_rn __double2int_rn __double2uint_rn __float2int_rn ' +
+            '__float2uint_rn __int2float_rn __uint2float_rn __double2hiint ' +
+            '__double2loint __hiloint2double __float_as_int __int_as_float ' +
+            '__double_as_longlong __longlong_as_double __float2half __half2float ' +
+            '__float2half_rn __half2float __half2int_rn __int2half_rn ' +
+            '__uint2half_rn __half2uint_rn __half_add __half_sub __half_mul ' +
+            '__half_div __half_neg __half_eq __half_ne __half_lt __half_le ' +
+            '__half_gt __half_ge __hadd __hsub __hmul __hdiv __hneg __heq ' +
+            '__hne __hlt __hle __hgt __hge __hadd_sat __hsub_sat __hmul_sat ' +
+            '__hdiv_sat __hfma_sat __habs __hmin __hmax __atomicAdd __atomicExch ' +
+            '__atomicMin __atomicMax __atomicInc __atomicDec __atomicCAS ' +
+            '__atomicAnd __atomicOr __atomicXor',
+          built_in: 'dim3 make_uint2 make_uint3 make_uint4 make_int2 make_int3 ' +
+            'make_int4 make_float2 make_float3 make_float4',
+          type: 'char uchar short ushort int uint long ulong longlong ulonglong ' +
+            'float double dim3 uint2 uint3 uint4 int2 int3 int4 float2 float3 float4'
+        };
+        
+        const cudaLanguage = hljs.getLanguage('cpp');
+        cudaLanguage.keywords = CUDA_KEYWORDS;
+        return cudaLanguage;
+      });
+
+      // 高亮所有代码块
+      document.querySelectorAll('pre code').forEach((el) => {
+        hljs.highlightElement(el);
+      });
+      
+      // 定义复制图标（使用SVG）
+      const copyIcon = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      `;
+      
+      const successIcon = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      
+      const errorIcon = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      
+      // 事件委托处理复制按钮点击
+      document.body.addEventListener('click', async (e) => {
+        if (e.target.closest('.copy-button')) {
+          const button = e.target.closest('.copy-button');
+          const pre = button.closest('pre');
+          const code = pre.querySelector('code').innerText;
+          
+          try {
+            if (navigator.clipboard) {
+              await navigator.clipboard.writeText(code);
+            } 
+            else {
+              const textarea = document.createElement('textarea');
+              textarea.value = code;
+              textarea.style.position = 'fixed';
+              document.body.appendChild(textarea);
+              textarea.select();
+              document.execCommand('copy');
+              document.body.removeChild(textarea);
+            }
+            
+            // 显示成功状态
+            button.innerHTML = successIcon;
+            setTimeout(() => {
+              button.innerHTML = copyIcon;
+            }, 2000);
+          } catch (err) {
+            console.error('复制失败:', err);
+            button.innerHTML = errorIcon;
+            setTimeout(() => {
+              button.innerHTML = copyIcon;
+            }, 2000);
+          }
+        }
+      });
+        
+      // 添加复制按钮到所有代码块
+      document.querySelectorAll('pre').forEach((pre) => {
+        if (pre.querySelector('.copy-button')) return;
+        
+        const button = document.createElement('button');
+        button.className = 'copy-button';
+        button.setAttribute('aria-label', '复制代码');
+        button.setAttribute('title', '复制代码');
+        button.innerHTML = copyIcon;
+        
+        pre.appendChild(button);
+      });
+      
       // 生成大纲导航
       const outlineList = document.getElementById('outline-list');
       const headings = document.querySelectorAll('.content-with-sidebar h1, .content-with-sidebar h2, .content-with-sidebar h3, .content-with-sidebar h4, .content-with-sidebar h5, .content-with-sidebar h6');
@@ -524,6 +674,35 @@
       });
     });
   </script>
+
+  <!-- 对应调整按钮样式 -->
+  <style>
+    .copy-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: all 0.3s ease;
+    }
+    
+    .copy-button:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .copy-button svg {
+      stroke: #adbac7;
+    }
+  </style>
   
   <!-- MathJax 配置 -->
   <script>
