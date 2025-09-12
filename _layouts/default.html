@@ -352,27 +352,24 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
   
   <!-- 覆盖代码高亮字体 -->
-  <style>
-    /* 使用浅色主题 */
+  <!-- <style>
     pre[class*="language-"] {
       border-radius: 6px;
       padding: 16px !important;
       margin: 1.5em 0;
       overflow: auto;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.04);
       border-left: 4px solid #4285f4;
       position: relative;
-      background: #f8f9fa !important; /* 浅灰色背景 */
+      background: #2d2d2d !important;
     }
     
     code[class*="language-"] {
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace !important;
       font-size: 16px !important;
       background: transparent !important;
-      text-shadow: none !important; /* 移除文字阴影 */
     }
-    
-    /* 工具栏样式 */
+
     div.code-toolbar > .toolbar {
       opacity: 1 !important;
       top: 8px;
@@ -381,42 +378,20 @@
     
     div.code-toolbar > .toolbar > .toolbar-item > button {
       padding: 4px 8px;
-      background: #e9ecef;
-      color: #495057;
-      border: 1px solid #dee2e6;
+      background: #555;
+      color: white;
+      border: none;
       border-radius: 4px;
       cursor: pointer;
       opacity: 0.7;
-      transition: all 0.3s;
+      transition: opacity 0.3s;
       font-size: 12px;
     }
     
     div.code-toolbar > .toolbar > .toolbar-item > button:hover {
       opacity: 1;
-      background: #dee2e6;
     }
-    
-    /* 特定语言的高亮调整 */
-    .token.keyword {
-      color: #007bff; /* 关键字蓝色 */
-    }
-    
-    .token.string {
-      color: #28a745; /* 字符串绿色 */
-    }
-    
-    .token.comment {
-      color: #6c757d; /* 注释灰色 */
-    }
-    
-    .token.function {
-      color: #6610f2; /* 函数紫色 */
-    }
-    
-    .token.number {
-      color: #fd7e14; /* 数字橙色 */
-    }
-  </style>
+  </style> -->
 </head>
 <body>
   <!-- 导航区域 -->
