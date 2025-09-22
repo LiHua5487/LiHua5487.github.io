@@ -57,19 +57,6 @@
       overflow-x: auto;
     }
     
-    /* 移动设备公式调整 */
-    @media (max-width: 768px) {
-      .MathJax_Display {
-        margin: 1em 0;
-        padding: 8px 0;
-      }
-      
-      .math-container {
-        max-width: 95%;
-        overflow-x: auto;
-      }
-    }
-    
     /* 表格样式 */
     table {
       width: 100%;
@@ -341,6 +328,19 @@
       
       .expand-outline-btn {
         display: none !important;
+      }
+    }
+
+    /* 移动设备公式调整 */
+    @media (max-width: 768px) {
+      .MathJax_Display {
+        margin: 1em 0;
+        padding: 8px 0;
+      }
+      
+      .math-container {
+        max-width: 95%;
+        overflow-x: auto;
       }
     }
   </style>
