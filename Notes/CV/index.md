@@ -8,3 +8,4 @@
 
 # 目录
 - [1 Image Formation](https://lihua5487.github.io/Notes/CV/1%20Image%20Formation)
+- [2 Image Processing](https://lihua5487.github.io/Notes/CV/2%20Image%20Processing)
