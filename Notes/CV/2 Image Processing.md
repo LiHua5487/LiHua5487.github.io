@@ -63,11 +63,11 @@ $$F(x)=P(X\leq x)$$
 双边滤波在此基础上引入了另一个权重，两个权重综合作用进行滤波
 - Domain Kernel ：衡量与中心像素的距离，这是一个高斯核，越靠近中心权重越大
 
-$$W_d(i, j) = \exp\left(-\frac{{(x_i - x)}^2 + {(y_i - y)}^2}{2\sigma_d^2}\right)$$
+$$W_d(i, j) = \exp\left(-\frac{(x_i - x)^2 + (y_i - y)^2}{2\sigma_d^2}\right)$$
 
 - Range Kernel ：衡量与中心像素的灰度/颜色相似程度，越相似权重越大
 
-$$W_r(i, j) = \exp\left(-\frac{{(I(x_i, y_i) - I(x, y))}^2}{2\sigma_r^2}\right)$$
+$$W_r(i, j) = \exp\left(-\frac{(I(x_i, y_i) - I(x, y))^2}{2\sigma_r^2}\right)$$
 
 最终的结果由这两个卷积核共同作用得到
 
