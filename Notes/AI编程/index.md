@@ -10,3 +10,4 @@
 - [3 GPU硬件结构与线程同步](https://lihua5487.github.io/Notes/AI编程/3%20Parallel%20Communication)
 - [4 并行算法 I](https://lihua5487.github.io/Notes/AI编程/4%20Parallel%20Algorithm%201)
 - [5 并行算法 II](https://lihua5487.github.io/Notes/AI编程/5%20Parallel%20Algorithm%202)
+- [6 矩阵乘法](https://lihua5487.github.io/Notes/AI编程/6%20Matrix%20Product)
