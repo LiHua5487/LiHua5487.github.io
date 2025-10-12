@@ -9,3 +9,5 @@
 # 目录
 - [1 Image Formation](https://lihua5487.github.io/Notes/CV/1%20Image%20Formation)
 - [2 Image Processing](https://lihua5487.github.io/Notes/CV/2%20Image%20Processing)
+- [3 Feature Detection](https://lihua5487.github.io/Notes/CV/3%20Feature%20Detection)
+- [4 Image Stitching](https://lihua5487.github.io/Notes/CV/4%20Image%20Stitching)
