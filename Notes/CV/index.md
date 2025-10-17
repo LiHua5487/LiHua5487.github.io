@@ -11,3 +11,5 @@
 - [2 Image Processing](https://lihua5487.github.io/Notes/CV/2%20Image%20Processing)
 - [3 Feature Detection](https://lihua5487.github.io/Notes/CV/3%20Feature%20Detection)
 - [4 Image Stitching](https://lihua5487.github.io/Notes/CV/4%20Image%20Stitching)
+- [5 3D Vision and Camera Calibration](https://lihua5487.github.io/Notes/CV/5%203D%20Vision%20and%20Camera%20Calibration)
+- [6 Epipolar Geometry](https://lihua5487.github.io/Notes/CV/6%20Epipolar%20Geometry)
