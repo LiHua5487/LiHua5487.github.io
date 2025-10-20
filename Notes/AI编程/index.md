@@ -11,3 +11,4 @@
 - [4 并行算法 I](https://lihua5487.github.io/Notes/AI编程/4%20Parallel%20Algorithm%201)
 - [5 并行算法 II](https://lihua5487.github.io/Notes/AI编程/5%20Parallel%20Algorithm%202)
 - [6 矩阵乘法](https://lihua5487.github.io/Notes/AI编程/6%20Matrix%20Product)
+- [7 卷积与池化](https://lihua5487.github.io/Notes/AI编程/7%20Convolution%20and%20Pooling)
