@@ -2,6 +2,8 @@
 
 ---
 
+省略了pybind11和unittest的部分，因为太工程了，现用现查就行
+
 学习中，暂不评价...
 
 # 目录
@@ -12,3 +14,4 @@
 - [5 并行算法 II](https://lihua5487.github.io/Notes/AI编程/5%20Parallel%20Algorithm%202)
 - [6 矩阵乘法](https://lihua5487.github.io/Notes/AI编程/6%20Matrix%20Product)
 - [7 卷积与池化](https://lihua5487.github.io/Notes/AI编程/7%20Convolution%20and%20Pooling)
+- [8 自动微分](https://lihua5487.github.io/Notes/AI编程/8%20Auto%20Diff)
