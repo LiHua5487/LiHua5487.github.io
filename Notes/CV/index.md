@@ -14,3 +14,4 @@
 - [5 3D Vision and Camera Calibration](https://lihua5487.github.io/Notes/CV/5%203D%20Vision%20and%20Camera%20Calibration)
 - [6 Epipolar Geometry](https://lihua5487.github.io/Notes/CV/6%20Epipolar%20Geometry)
 - [7 Two-View Stereo](https://lihua5487.github.io/Notes/CV/7%20Two-View%20Stereo)
+- [8 Structure from Motion](https://lihua5487.github.io/Notes/CV/8%20Structure%20from%20Motion)
