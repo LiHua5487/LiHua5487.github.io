@@ -395,67 +395,41 @@ curandDestroyGenerator(prng);
 ```
 ---
 
-下面贴两个 deepseek 提供的例子
+这里讲一下 `cublas` 中的 `sgemm` ，因为 lab 里会用到，其参数如下
 
 ```cpp
-#include <cublas_v2.h>
-#include <cuda_runtime.h>
-
-// CUBLAS 矩阵乘法
-void cublas_matrix_multiply(float* d_A, float* d_B, float* d_C, int m, int n, int k, cudaStream_t stream) {
-	// 创建句柄
-    cublasHandle_t handle;
-    cublasCreate(&handle);
-    
-    // 设置CUDA流
-    cublasSetStream(handle, stream);
-    
-    // 设置数学模式（Tensor Core加速）
-    cublasSetMathMode(handle, CUBLAS_TF32_TENSOR_OP_MATH);
-    
-    float alpha = 1.0f, beta = 0.0f;
-    
-    // 执行矩阵乘法: C = A * B
-    cublasSgemm(handle,
-                CUBLAS_OP_N,   // A不转置
-                CUBLAS_OP_N,   // B不转置  
-                n, m, k,       // 矩阵维度
-                &alpha,
-                d_B, n,        // B矩阵, leading dimension = n
-                d_A, k,        // A矩阵, leading dimension = k  
-                &beta,
-                d_C, n);       // C矩阵, leading dimension = n
-    
-    // 同步等待计算完成
-    cudaStreamSynchronize(stream);
-    
-    // 销毁句柄
-    cublasDestroy(handle);
-}
+cublasSgemm(
+    cublasHandle_t handle, // cublas句柄
+    cublasOperation_t transa, // A是否转置
+    cublasOperation_t transb, // B是否转置
+    int m, int n, int k,
+    const float *alpha,
+    const float *A, int lda, // A及其leading dim
+    const float *B, int ldb, // B及其leading dim
+    const float *beta,
+    float *C, int ldc // C及其leading dim
+);
 ```
 
-```cpp
-#include <curand.h>
-#include <cuda_runtime.h>
-// CURAND 生成随机数示例
-void generate_random_numbers(float* d_output, int num_elements, unsigned long seed) {
-	// 创建CURAND生成器句柄
-    curandGenerator_t generator;
-    curandCreateGenerator(&generator, CURAND_RNG_PSEUDO_DEFAULT);
-    
-    // 设置随机数种子
-    curandSetPseudoRandomGeneratorSeed(generator, seed);
-    
-    // 生成均匀分布的随机数 [0, 1)
-    curandGenerateUniform(generator, d_output, num_elements);
-    
-    // 同步确保随机数生成完成
-    cudaDeviceSynchronize();
-    
-    // 销毁生成器句柄
-    curandDestroyGenerator(generator);
-}
-```
+它实现了这样一个运算
+
+$$C\leftarrow \alpha A_{m\times k}\cdot B_{k\times n}+\beta C_{m\times n}$$
+
+- $m,n,k$ 对应 `sgemm` 中的那三个参数
+- $lda=m,\quad ldb=n,\quad ldc=m$ ，这里的 $m,n$ 均为转置之前的
+
+值得注意的是，这里的矩阵都是列主序的，即对于一个存储序列 1,2,3...6 ，如果矩阵形状为 2×3，则 cublas 会将其视为
+
+$$
+\begin{bmatrix}
+1 & 3 & 5\\
+2 & 4 & 6
+\end{bmatrix}
+$$
+
+同样的，对于计算结果的矩阵，其会按列主序将这个矩阵转换为存储序列返回
+
+如果要计算行主序的矩阵乘法 $C=A\cdot B$ ，可以转换为列主序的矩阵乘法 $C^T=B^T\cdot A^T$ ， 这样 $C^T$ 按列主序转换为序列，返回主机按行主序理解时，就是正确的结果 $C$ 了
 
 ---
 
