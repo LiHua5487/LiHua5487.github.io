@@ -16,3 +16,5 @@
 - [7 Two-View Stereo](https://lihua5487.github.io/Notes/CV/7%20Two-View%20Stereo)
 - [8 Structure from Motion](https://lihua5487.github.io/Notes/CV/8%20Structure%20from%20Motion)
 - [9 Multi-View Stereo](https://lihua5487.github.io/Notes/CV/9%20Multi-View%20Stereo)
+- [10 Photometric Stereo](https://lihua5487.github.io/Notes/CV/10%20Photometric%20Stereo)
+- [11 Optical Flow](https://lihua5487.github.io/Notes/CV/11%20Optical%20Flow)

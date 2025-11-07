@@ -209,6 +209,15 @@ $$\min_f \|A f - G\|^2 + \lambda \|B f - F\|^2$$
 
 可见 $A$ 和 $B$ 都是非常稀疏的，具体计算参考 Large-scale Sparse Matrix 的处理方式
 
+---
+
+在将 $\nabla f$ 离散化时（以 $x$ 方向为例），一个简单的想法是
+$$\frac{\partial f}{\partial x} \approx f(x + 1,y) - f(x,y)$$
+但下面的方法更逼近，因为泰勒展开后可以消掉二阶导那一项
+$$\frac{\partial f}{\partial x} \approx \frac{f(x + 1,y) - f(x-1,y)}{2}$$
+而拉普拉斯算子 $\nabla^2$ 的离散化是
+$$\nabla^2 f \approx f(x + 1,y) + f(x - 1,y) + f(x,y + 1) + f(x,y - 1) - 4f(x,y)$$
+
 
 
 
