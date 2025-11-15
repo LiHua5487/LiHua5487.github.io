@@ -13,3 +13,4 @@
 - [5.2 堆与 Huffman 树](https://lihua5487.github.io/Notes/数算/5.2%20堆与Huffman树)
 - [6 树](https://lihua5487.github.io/Notes/数算/6%20树)
 - [7 图](https://lihua5487.github.io/Notes/数算/7%20图)
+- [8 内排序](https://lihua5487.github.io/Notes/数算/8%20内排序)
