@@ -14,3 +14,5 @@
 - [6 树](https://lihua5487.github.io/Notes/数算/6%20树)
 - [7 图](https://lihua5487.github.io/Notes/数算/7%20图)
 - [8 内排序](https://lihua5487.github.io/Notes/数算/8%20内排序)
+- [9 外排序](https://lihua5487.github.io/Notes/数算/9%20外排序)
+- [10 检索](https://lihua5487.github.io/Notes/数算/10%20检索)
