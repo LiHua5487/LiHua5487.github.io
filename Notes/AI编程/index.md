@@ -15,3 +15,6 @@
 - [6 矩阵乘法](https://lihua5487.github.io/Notes/AI编程/6%20Matrix%20Product)
 - [7 卷积与池化](https://lihua5487.github.io/Notes/AI编程/7%20Convolution%20and%20Pooling)
 - [8 自动微分](https://lihua5487.github.io/Notes/AI编程/8%20Auto%20Diff)
+- [9 计算图](https://lihua5487.github.io/Notes/AI编程/9%20Computational%20Graph)
+- [10 AI编译器前端](https://lihua5487.github.io/Notes/AI编程/10%20Front-end%20of%20AI%20Compiler)
+- [11 优化器](https://lihua5487.github.io/Notes/AI编程/11%20Network%20Optimization)
