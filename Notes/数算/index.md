@@ -17,3 +17,4 @@
 - [9 外排序](https://lihua5487.github.io/Notes/数算/9%20外排序)
 - [10 检索](https://lihua5487.github.io/Notes/数算/10%20检索)
 - [11 索引](https://lihua5487.github.io/Notes/数算/11%20索引)
+- [12 高级数据结构 1](https://lihua5487.github.io/Notes/数算/12%20高级数据结构%201)
