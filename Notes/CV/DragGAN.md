@@ -13,7 +13,7 @@ DragGAN 并不是直接对原图像进行编辑的，而是调整一个图像在
 
 StyleGAN 额外搞了个映射网络，把 $z$ 映射为一个向量 $w\in \mathbb{R}^{512}$ ，这是一个潜在编码 latent code ，而后把它复制到生成器的每一层，作为风格向量给到 AdaIN ，这个 $w$ 会具有更强的可解释性
 
-![[image.png]]
+![[CV/img/draggan/image.png]]
 
 论文中采用的是 StyleGAN2 ，这是对 StyleGAN 的一个改进
 
@@ -36,7 +36,7 @@ StyleGAN 额外搞了个映射网络，把 $z$ 映射为一个向量 $w\in \math
 
 这样就能直接把选定点（红）与目标点（蓝）标记到 $F$ 中，记一点 $p$ 处的特征值为 $F(p)$ 
 
-![[image-1.png]]
+![[CV/img/draggan/image-1.png]]
 
 要移动选定点，就是想让调整后的 $w'$ 对应的特征图 $F'$ 中，目标位置附近的特征与原先选定点附近的特征尽可能相似
 
