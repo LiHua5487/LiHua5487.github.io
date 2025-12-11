@@ -20,3 +20,4 @@
 - [11 优化器](https://lihua5487.github.io/Notes/AI编程/11%20Network%20Optimization)
 - [15 分布式训练与数据并行](https://lihua5487.github.io/Notes/AI编程/15%20Intro%20to%20Distributed%20Training)
 - [16 模型并行和序列并行](https://lihua5487.github.io/Notes/AI编程/16%20Parallel%20Methods%20for%20Distributed%20Training)
+- [17 模型量化](https://lihua5487.github.io/Notes/AI编程/17%20Quantization)
