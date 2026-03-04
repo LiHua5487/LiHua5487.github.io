@@ -40,21 +40,15 @@
       margin: 0.5em 0;
     }
 
-    /* $$...$$ 公式 */
-    .MathJax_Display {
+    /* MathJax 显示公式 */
+    mjx-container[display="true"],
+    .obsidian-display-math-source {
       text-align: center;
       display: block;
       margin: 1.5em 0;
       overflow-x: auto;
       overflow-y: hidden;
       padding: 10px 0;
-    }
-    
-    /* 公式容器 */
-    .math-container {
-      display: inline-block;
-      max-width: 100%;
-      overflow-x: auto;
     }
     
     /* 表格样式 */
@@ -333,14 +327,10 @@
 
     /* 移动设备公式调整 */
     @media (max-width: 768px) {
-      .MathJax_Display {
+      mjx-container[display="true"],
+      .obsidian-display-math-source {
         margin: 1em 0;
         padding: 8px 0;
-      }
-      
-      .math-container {
-        max-width: 95%;
-        overflow-x: auto;
       }
     }
   </style>
@@ -643,27 +633,333 @@
     }
   </style>
   
+  <!-- Obsidian 内容预处理 -->
+  <script>
+    (function() {
+      const SKIP_SELECTOR = 'script,style,code,pre,textarea,mjx-container,.MathJax';
+      const DIMENSION_PATTERN = /^(\d+)?x(\d+)?$/i;
+
+      function isInsideSkippedNode(node) {
+        return !!(node.parentElement && node.parentElement.closest(SKIP_SELECTOR));
+      }
+
+      function createTextNodeWalker(root, needle) {
+        return document.createTreeWalker(
+          root,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode(node) {
+              if (!node.nodeValue || node.nodeValue.indexOf(needle) === -1) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              if (isInsideSkippedNode(node)) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              return NodeFilter.FILTER_ACCEPT;
+            }
+          }
+        );
+      }
+
+      function collectTargetTextNodes(root, needle) {
+        const walker = createTextNodeWalker(root, needle);
+        const nodes = [];
+        let current = walker.nextNode();
+        while (current) {
+          nodes.push(current);
+          current = walker.nextNode();
+        }
+        return nodes;
+      }
+
+      function extractScaleSpec(spec) {
+        const match = spec.match(/\{scale=([^}]+)\}\s*$/i);
+        if (!match) {
+          return { value: null, remaining: spec.trim() };
+        }
+        return {
+          value: match[1].trim(),
+          remaining: spec.slice(0, match.index).trim()
+        };
+      }
+
+      function parseImageSpec(spec) {
+        const scale = extractScaleSpec(spec);
+        let pathPart = scale.remaining;
+        let sizePart = null;
+        const pipeIndex = pathPart.indexOf('|');
+
+        if (pipeIndex !== -1) {
+          sizePart = pathPart.slice(pipeIndex + 1).trim();
+          pathPart = pathPart.slice(0, pipeIndex).trim();
+        }
+
+        return {
+          path: pathPart,
+          size: sizePart,
+          scale: scale.value
+        };
+      }
+
+      function toEncodedPath(path) {
+        return encodeURI(
+          path
+            .trim()
+            .replace(/\\/g, '/')
+            .replace(/[<>"']/g, '')
+        );
+      }
+
+      function resolveObsidianImageUrl(rawPath) {
+        if (/^[a-z]+:\/\//i.test(rawPath)) {
+          return rawPath;
+        }
+
+        const encodedPath = toEncodedPath(rawPath);
+        if (!encodedPath) {
+          return '';
+        }
+
+        if (encodedPath.startsWith('/')) {
+          return new URL(encodedPath, window.location.origin).toString();
+        }
+
+        const currentPath = window.location.pathname;
+        const currentDirectory = currentPath.slice(0, currentPath.lastIndexOf('/') + 1);
+        const notesIndex = currentPath.indexOf('/Notes/');
+        const notesRoot = notesIndex === -1
+          ? '/Notes/'
+          : currentPath.slice(0, notesIndex + '/Notes/'.length);
+
+        if (/^(img|imgs)\//i.test(encodedPath) || encodedPath.startsWith('./') || encodedPath.startsWith('../')) {
+          return new URL(encodedPath, `${window.location.origin}${currentDirectory}`).toString();
+        }
+
+        if (encodedPath.startsWith('Notes/')) {
+          return new URL(encodedPath, `${window.location.origin}/`).toString();
+        }
+
+        return new URL(encodedPath, `${window.location.origin}${notesRoot}`).toString();
+      }
+
+      function applyImageSize(img, sizeSpec, scaleSpec) {
+        let hasExplicitSize = false;
+
+        if (sizeSpec) {
+          if (/^\d+$/.test(sizeSpec)) {
+            img.style.width = `${sizeSpec}px`;
+            hasExplicitSize = true;
+          } else {
+            const dimensionMatch = sizeSpec.match(DIMENSION_PATTERN);
+            if (dimensionMatch) {
+              const width = dimensionMatch[1];
+              const height = dimensionMatch[2];
+              if (width) {
+                img.style.width = `${width}px`;
+              }
+              if (height) {
+                img.style.height = `${height}px`;
+              }
+              hasExplicitSize = !!(width || height);
+            }
+          }
+        }
+
+        if (!hasExplicitSize && scaleSpec) {
+          const scaleValue = scaleSpec.match(/(\d+(\.\d+)?)%?/);
+          if (scaleValue) {
+            const percentage = Number.parseFloat(scaleValue[1]);
+            if (Number.isFinite(percentage) && percentage > 0) {
+              img.style.width = `${percentage}%`;
+            }
+          }
+        }
+      }
+
+      function createObsidianImageElement(rawSpec) {
+        const parsed = parseImageSpec(rawSpec);
+        if (!parsed.path) {
+          return null;
+        }
+
+        const imageUrl = resolveObsidianImageUrl(parsed.path);
+        if (!imageUrl) {
+          return null;
+        }
+
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = parsed.path.split('/').pop() || 'image';
+        img.loading = 'lazy';
+        applyImageSize(img, parsed.size, parsed.scale);
+        return img;
+      }
+
+      function replaceObsidianImageSyntax(root) {
+        const targets = collectTargetTextNodes(root, '![[');
+
+        targets.forEach((node) => {
+          const text = node.nodeValue;
+          const regex = /!\[\[([^\]]+)\]\]/g;
+          let lastIndex = 0;
+          let match = regex.exec(text);
+
+          if (!match) {
+            return;
+          }
+
+          const fragment = document.createDocumentFragment();
+
+          while (match) {
+            if (match.index > lastIndex) {
+              fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+            }
+
+            const imageNode = createObsidianImageElement(match[1].trim());
+            if (imageNode) {
+              fragment.appendChild(imageNode);
+            } else {
+              fragment.appendChild(document.createTextNode(match[0]));
+            }
+
+            lastIndex = match.index + match[0].length;
+            match = regex.exec(text);
+          }
+
+          if (lastIndex < text.length) {
+            fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+          }
+
+          node.parentNode.replaceChild(fragment, node);
+        });
+      }
+
+      function findUnescapedDoubleDollar(text, startIndex) {
+        for (let i = startIndex; i < text.length - 1; i += 1) {
+          if (text[i] === '$' && text[i + 1] === '$') {
+            let backslashCount = 0;
+            for (let j = i - 1; j >= 0 && text[j] === '\\'; j -= 1) {
+              backslashCount += 1;
+            }
+            if (backslashCount % 2 === 0) {
+              return i;
+            }
+          }
+        }
+        return -1;
+      }
+
+      function normalizeDoubleDollarDisplayMath(root) {
+        const targets = collectTargetTextNodes(root, '$$');
+
+        targets.forEach((node) => {
+          const text = node.nodeValue;
+          const fragment = document.createDocumentFragment();
+          let cursor = 0;
+          let hasReplacement = false;
+
+          while (cursor < text.length) {
+            const start = findUnescapedDoubleDollar(text, cursor);
+            if (start === -1) {
+              break;
+            }
+
+            const end = findUnescapedDoubleDollar(text, start + 2);
+            if (end === -1) {
+              break;
+            }
+
+            if (start > cursor) {
+              fragment.appendChild(document.createTextNode(text.slice(cursor, start)));
+            }
+
+            const formula = text.slice(start + 2, end).trim();
+            if (formula) {
+              const displayContainer = document.createElement('span');
+              displayContainer.className = 'obsidian-display-math-source';
+              displayContainer.textContent = `\\[${formula}\\]`;
+              fragment.appendChild(displayContainer);
+              hasReplacement = true;
+            } else {
+              fragment.appendChild(document.createTextNode('$$'));
+            }
+
+            cursor = end + 2;
+          }
+
+          if (!hasReplacement) {
+            return;
+          }
+
+          if (cursor < text.length) {
+            fragment.appendChild(document.createTextNode(text.slice(cursor)));
+          }
+
+          node.parentNode.replaceChild(fragment, node);
+        });
+      }
+
+      function bindImageErrorHandler(root) {
+        const notesIndex = window.location.pathname.indexOf('/Notes/');
+        const notesRoot = notesIndex === -1
+          ? '/Notes/'
+          : window.location.pathname.slice(0, notesIndex + '/Notes/'.length);
+
+        root.querySelectorAll('img').forEach((img) => {
+          if (img.dataset.obsidianErrorBound === '1') {
+            return;
+          }
+
+          img.dataset.obsidianErrorBound = '1';
+          img.addEventListener('error', function onImageError() {
+            console.error('图片加载失败:', this.src);
+            this.alt = `[图片加载失败: ${this.src.replace(window.location.origin + notesRoot, '')}]`;
+            this.style.border = '2px dashed red';
+            this.style.backgroundColor = '#fff8f8';
+            this.style.padding = '10px';
+            this.style.textAlign = 'center';
+          });
+        });
+      }
+
+      window.preprocessObsidianContent = function preprocessObsidianContent(root) {
+        if (!root || root.dataset.obsidianProcessed === '1') {
+          return;
+        }
+
+        replaceObsidianImageSyntax(root);
+        normalizeDoubleDollarDisplayMath(root);
+        bindImageErrorHandler(root);
+        root.dataset.obsidianProcessed = '1';
+      };
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
+        window.preprocessObsidianContent(contentContainer);
+      });
+    })();
+  </script>
+
   <!-- MathJax 配置 -->
   <script>
     MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$','$$'], ['\\[','\\]']],
-        processEscapes: true
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
       },
       options: {
-        enableMenu: false // 禁用右键菜单
+        enableMenu: false, // 禁用右键菜单
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
       },
       startup: {
-        ready: () => {
-          MathJax.startup.defaultReady();
-          // 为每个display公式添加容器
-          document.querySelectorAll('.MathJax_Display').forEach(math => {
-            const container = document.createElement('div');
-            container.className = 'math-container';
-            math.parentNode.insertBefore(container, math);
-            container.appendChild(math);
-          });
+        pageReady: () => {
+          const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
+          if (window.preprocessObsidianContent) {
+            window.preprocessObsidianContent(contentContainer);
+          }
+          return MathJax.startup.defaultPageReady();
         }
       }
     };
@@ -676,64 +972,5 @@
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
   </script>
 
-  <!-- 修正图片链接格式 -->
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // 基础 URL
-    const BASE_URL = 'https://lihua5487.github.io/Notes/';
-    
-    // 处理 Obsidian 图片语法
-    const contentContainer = document.querySelector('.content-with-sidebar') || document.body;
-    let contentHtml = contentContainer.innerHTML;
-    
-    // 正则表达式匹配图片
-    contentHtml = contentHtml.replace(
-      /!\[\[([^\]]+?)(?:\{scale=([^\}]+?)\})?\]\]/g,
-      (match, path, scaleSpec) => {
-        // 正确清理路径：保留中文路径，只处理空格和特殊字符
-        const cleanedPath = path.trim()
-          .replace(/\s+/g, '%20')  // 空格转义
-          .replace(/[<>"']/g, ''); // 移除非法字符
-        
-        // 构建完整 URL - 不再移除开头斜杠
-        const fullImageUrl = `${BASE_URL}${cleanedPath}`;
-        const altText = cleanedPath.split('/').pop();
-        
-        // 默认样式
-        let style = '';
-        
-        // 处理缩放比例
-        if (scaleSpec) {
-          // 提取数字部分（支持百分比和小数）
-          const scaleValue = scaleSpec.match(/(\d+(\.\d+)?)%?/);
-          if (scaleValue) {
-            const percentage = parseFloat(scaleValue[1]);
-            if (!isNaN(percentage)) {
-              style = `zoom: ${percentage}%;`;
-            }
-          }
-        }
-        
-        // 直接返回带有zoom样式的图片标签
-        return `<img src="${fullImageUrl}" alt="${altText}" style="${style}">`;
-      }
-    );
-    
-    // 应用处理后的内容
-    contentContainer.innerHTML = contentHtml;
-    
-    // 添加图片加载错误处理
-    document.querySelectorAll('img').forEach(img => {
-      img.addEventListener('error', function() {
-        console.error('图片加载失败:', this.src);
-        this.alt = `[图片加载失败: ${this.src.replace(BASE_URL, '')}]`;
-        this.style.border = '2px dashed red';
-        this.style.backgroundColor = '#fff8f8';
-        this.style.padding = '10px';
-        this.style.textAlign = 'center';
-      });
-    });
-  });
-  </script>
 </body>
 </html>
