@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Siyuan Li, undergraduate student at Peking University. Research interests in embodied AI and robot learning, and course notes.">
+    <meta name="description" content="My Academic Homepage">
     <title>Siyuan Li</title>
     <link rel="icon" href="imgs/head-icon.jpg" type="image/jpeg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -80,11 +80,15 @@
         .appearance-controls button:hover { color: var(--link); border-color: var(--link); }
         #theme-toggle { font-size: 20px; }
         .profile-header { display: flex; align-items: center; gap: 40px; padding: 46px 0 12px; }
-        .avatar { display: block; flex: 0 0 180px; width: 180px; height: 180px; object-fit: cover; }
+        .avatar { display: block; flex: 0 0 180px; width: 180px; height: 180px; object-fit: cover; border-radius: 50%; }
         .profile-copy { flex: 1; min-width: 0; }
         .profile-links { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; margin-top: 22px; font-size: 15px; }
         .profile-links i { margin-right: 6px; }
         .page-section { padding-top: 40px; }
+        .awards-list { margin: 0; padding: 0; list-style: none; }
+        .awards-list li { display: flex; gap: clamp(12px, 4vw, 36px); }
+        .awards-list li + li { margin-top: 14px; }
+        .award-year { flex: 0 0 10ch; color: var(--muted); font-variant-numeric: tabular-nums; }
         .text-link { font-size: 15px; }
         .note-list { margin: 0; padding: 0; list-style: none; }
         .note-list li { padding: 10px 0; border-bottom: 1px solid var(--line); }
@@ -117,6 +121,7 @@
             <a class="site-name" href="#main">Siyuan Li</a>
             <nav class="site-nav" aria-label="Main navigation">
                 <a href="#publications" data-zh="论文">Publications</a>
+                <a href="#awards" data-zh="奖项与荣誉">Awards</a>
                 <a href="#notes" data-zh="笔记">Notes</a>
                 <a href="/personal/" data-zh="个人主页">Personal</a>
             </nav>
@@ -132,7 +137,7 @@
             <img class="avatar" src="imgs/head-icon.jpg" width="180" height="180" alt="">
             <div class="profile-copy">
                 <h1 id="profile-name">Siyuan Li</h1>
-                <p data-zh="我是北京大学智能科学与技术专业的本科生，研究兴趣是具身智能与机器人学习，关注导航和世界动作模型。">I am an undergraduate in Intelligence Science and Technology at Peking University. My research interests lie in embodied AI and robot learning, with a focus on navigation and world-action models.</p>
+                <p data-zh="我是北京大学智能科学与技术专业的本科生，研究兴趣是具身智能与机器人学习，关注导航和世界动作模型。">I am an undergraduate in Intelligence Science and Technology at Peking University. My research interests lie in embodied AI and robot learning, with a focus on Navigation and World-Action Models.</p>
                 <p class="profile-links" id="contact">
                     <a href="mailto:3572257484@qq.com"><i class="fa-regular fa-envelope" aria-hidden="true"></i>Email</a>
                     <a href="https://github.com/LiHua5487"><i class="fa-brands fa-github" aria-hidden="true"></i>GitHub</a>
@@ -142,6 +147,16 @@
 
         <section class="page-section" id="publications" aria-labelledby="publications-title">
             <h2 id="publications-title" data-zh="论文">Publications</h2>
+        </section>
+
+        <section class="page-section" id="awards" aria-labelledby="awards-title">
+            <h2 id="awards-title" data-zh="奖项与荣誉">Awards &amp; Honors</h2>
+            <ul class="awards-list">
+                <li><span class="award-year">2025–2026</span><span data-zh="奔驰奖学金">Mercedes-Benz Scholarship</span></li>
+                <li><span class="award-year">2025–2026</span><span data-zh="北京大学三好学生">Merit Student, Peking University</span></li>
+                <li><span class="award-year">2024–2025</span><span data-zh="戴德梁行奖学金">Cushman &amp; Wakefield Scholarship</span></li>
+                <li><span class="award-year">2024–2025</span><span data-zh="北京大学三好学生">Merit Student, Peking University</span></li>
+            </ul>
         </section>
 
         <section class="page-section" id="notes" aria-labelledby="notes-title">
