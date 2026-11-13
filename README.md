@@ -1,6 +1,4 @@
-# 前言
+# 个人网站
 
-这里是我的个人主页的github仓库，个人主页请见[这里](https://lihua5487.github.io/)
-
-
-
+- [学术主页](https://lihua5487.github.io/)
+- [个人主页与课程笔记](https://lihua5487.github.io/personal/)
